@@ -1,7 +1,7 @@
 {
   "name": "fs-open-new-blog",
   "version": "1.0.0",
-  "description": "",
+  "description": "A new edition for blog exercise fs open part 9",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,17 +10,26 @@
     "build": "tsc -p tsconfig.prod.json",
     "lint": "eslint 'src/**/*.{js,ts}' --fix"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "read",
+    "blog",
+    "fsopen"
+  ],
+  "author": "pragmaticAweds",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.12.12",
+    "dotenv": "^16.4.5",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.0"
   }
 }

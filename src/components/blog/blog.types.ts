@@ -2,8 +2,8 @@ import { Document } from "mongoose";
 import { CustomIdAttributes } from "../../types";
 
 export interface BlogAttributes
-  extends Omit<Document, "_id">,
-    CustomIdAttributes {
+  extends CustomIdAttributes,
+    Omit<Document, "_id"> {
   title: string;
   author: string;
   url: string;

@@ -1,8 +1,8 @@
 import { createServer } from "http";
 import app from "./app";
-import config from "./config";
+import appConfig from "./appConfig";
 
-const { port } = config;
+const { port } = appConfig;
 
 app.set("port", port);
 

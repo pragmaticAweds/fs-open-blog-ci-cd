@@ -2,8 +2,16 @@ import { Router } from "express";
 
 import doFetchBlog from "./blog.actions";
 
-const blogRouter = Router();
+const blogsRouter = Router();
 
-blogRouter.get("/", doFetchBlog);
+blogsRouter.delete("/:blogId", doFetchBlog);
 
-export default blogRouter;
+blogsRouter.put("/:blogId", doFetchBlog);
+
+blogsRouter.get("/:blogId", doFetchBlog);
+
+blogsRouter.post("/", doFetchBlog);
+
+blogsRouter.get("/", doFetchBlog);
+
+export default blogsRouter;

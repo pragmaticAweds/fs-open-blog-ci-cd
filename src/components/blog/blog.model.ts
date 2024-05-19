@@ -1,10 +1,11 @@
 import { Schema, model } from "mongoose";
 import { BlogAttributes } from "./blog.types";
 import { DocCounterAttributes } from "../../types";
+import { updateModelCounter } from "../../utils";
 
 const blogSchema = new Schema<BlogAttributes>(
   {
-    _id: String,
+    id: String,
     title: String,
     author: String,
     url: String,
@@ -22,11 +23,19 @@ const blogCounterSchema = new Schema<DocCounterAttributes>(
   { timestamps: true }
 );
 
-blogSchema.pre<BlogAttributes>("save", async function (next) {
-  if (this.isNew) {
-  }
+blogSchema.pre("save", async function (next) {
+  await updateModelCounter(this, BlogCounterModel);
 
   next();
+});
+
+blogSchema.set("toJSON", {
+  transform: async (doc, returnedObj) => {
+    console.log(JSON.stringify({ returnedObj, doc }, null, 2));
+
+    delete returnedObj._id;
+    delete returnedObj.__v;
+  },
 });
 
 const BlogModel = model("Blog", blogSchema);

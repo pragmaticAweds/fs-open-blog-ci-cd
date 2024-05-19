@@ -19,7 +19,31 @@ class ResponseError extends Error {
 }
 
 const handleErrorResponse = (err: unknown) => {
-  const { message, extra, status } = err as ResponseError;
+  let { message, extra, status, name } = err as ResponseError;
+
+  switch (true) {
+    case name === "CastError":
+      message = "Malformatted id";
+      status = 400;
+      break;
+
+    case name === "ValidationError":
+      status = 400;
+      break;
+
+    case name === "JsonWebTokenError":
+      message = "invalid token";
+      status = 401;
+      break;
+
+    case name === "TokenExpiredError":
+      message = "token expired";
+      status = 401;
+      break;
+
+    default:
+      break;
+  }
 
   throw new ResponseError(message, status, extra);
 };
@@ -37,4 +61,4 @@ const errorHandlerMiddleware = (
   });
 };
 
-export { handleErrorResponse, errorHandlerMiddleware };
+export { handleErrorResponse, errorHandlerMiddleware, ResponseError };
