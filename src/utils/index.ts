@@ -34,3 +34,15 @@ export const updateModelCounter = async (
     throw err; // Propagate the error to the caller
   }
 };
+
+export function validatePassword(password: string) {
+  const strictRegex =
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=]).{8,}$/;
+
+  const simpleRegex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  const regex = simpleRegex;
+
+  return regex.test(password);
+}
