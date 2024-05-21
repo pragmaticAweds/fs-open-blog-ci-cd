@@ -1,9 +1,13 @@
-import { Document, Model } from "mongoose";
+import { NextFunction, Request, Response } from "express";
+import { ClientSession, Document, Model } from "mongoose";
+import { Schema } from "zod";
+
 import { CustomIdAttributes, DocCounterAttributes } from "../types";
+import { handleErrorResponse } from "./errorHandler";
 
-export const formatInternalPifId = (id: number) => String(id).padStart(6, "0");
+const formatInternalPifId = (id: number) => String(id).padStart(6, "0");
 
-export const updateModelCounter = async (
+const updateModelCounter = async (
   doc: Document & CustomIdAttributes,
   CounterModel: Model<DocCounterAttributes>
 ) => {
@@ -35,14 +39,74 @@ export const updateModelCounter = async (
   }
 };
 
-export function validatePassword(password: string) {
+const validatePassword = (password: string) => {
   const strictRegex =
-    /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=]).{8,}$/;
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
 
-  const simpleRegex =
-    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return strictRegex.test(password);
+};
 
-  const regex = simpleRegex;
+const policyMiddleware =
+  (schema: Schema, fieldType: "body" | "params" | "query" = "body") =>
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      let parsedData;
 
-  return regex.test(password);
-}
+      if (fieldType === "body") {
+        parsedData = schema.parse(req.body);
+        req.body = parsedData;
+      } else if (fieldType === "params") {
+        parsedData = schema.parse(req.params);
+        req.params = parsedData;
+      } else if (fieldType === "query") {
+        parsedData = schema.parse(req.query);
+        req.query = parsedData;
+      }
+
+      return next();
+    } catch (err) {
+      const message = `${(err as Record<string, any>).issues[0].path[0]} ${
+        (err as Record<string, any>).issues[0].message
+      }`.toLowerCase();
+
+      const error = {
+        ...(err as Record<string, unknown>),
+        message,
+        status: 400,
+        name: "Bad Request",
+      };
+
+      handleErrorResponse(error);
+    }
+  };
+
+const unknownEndpoint = (req: Request, res: Response) =>
+  res.status(404).send({ error: "unknown endpoint" });
+
+const handleResponse = (res: Response, data: unknown, status: number) => {
+  if (typeof data === "string")
+    return res.status(status).json({ message: data });
+
+  return res.status(status).json(data);
+};
+
+const commitSession = async (session: ClientSession) => {
+  await session.commitTransaction();
+  session.endSession();
+};
+
+const abortSession = async (session: ClientSession) => {
+  await session.abortTransaction();
+  session.endSession();
+};
+
+export {
+  formatInternalPifId,
+  updateModelCounter,
+  validatePassword,
+  policyMiddleware,
+  unknownEndpoint,
+  handleResponse,
+  commitSession,
+  abortSession,
+};

@@ -5,8 +5,8 @@ import { updateModelCounter } from "../../utils";
 
 const userSchema = new Schema<UserAttributes>({
   id: String,
-  username: { type: String, unique: true, lowercase: true },
-  name: { type: String, unique: true },
+  username: { type: String, lowercase: true },
+  name: { type: String },
   avatar: String,
   isCreator: { type: Boolean, default: false },
   ref: { type: Number, default: 0 },

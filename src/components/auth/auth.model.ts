@@ -44,4 +44,6 @@ const UserAccessCounterModel = model(
   userAccessCounterSchema
 );
 
-export default UserAccessCounterModel;
+const UserAccessModel = model("UserAccessModel", userAccessSchema);
+
+export default UserAccessModel;

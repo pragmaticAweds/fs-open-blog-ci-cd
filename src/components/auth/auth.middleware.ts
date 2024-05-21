@@ -1,12 +1,12 @@
 import { NextFunction, Response } from "express";
-import { IRequest } from "../../types";
+import { IRequest, IToken } from "../../types";
 import jwt from "jsonwebtoken";
 import { handleErrorResponse } from "../../utils/errorHandler";
 import { appConfig } from "../../config";
 
 const { authConfig } = appConfig;
 
-const verifyToken = (req: IRequest, res: Response, next: NextFunction) => {
+const verifyToken = (req: IRequest, _res: Response, next: NextFunction) => {
   let token = (req.headers["authorization"] ||
     req.headers["x-access-token"]) as string;
 
@@ -17,7 +17,7 @@ const verifyToken = (req: IRequest, res: Response, next: NextFunction) => {
   try {
     const decodedToken = jwt.verify(token, authConfig.jwtSecret);
 
-    req.decoded = decodedToken;
+    req.decoded = decodedToken as IToken;
 
     return next();
   } catch (err) {

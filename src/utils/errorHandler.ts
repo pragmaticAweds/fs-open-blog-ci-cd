@@ -1,15 +1,16 @@
 import { NextFunction, Request, Response } from "express";
+import { ResponseErrorAttributes } from "../types";
 
 class ResponseError extends Error {
   status: number;
   extra: Record<string, any>;
 
-  constructor(message?: string, status?: number, extra?: Record<string, any>) {
+  constructor({ message, name, status, extra }: ResponseErrorAttributes) {
     super();
 
     Error.captureStackTrace(this, this.constructor);
 
-    this.name = extra?.name || this.constructor.name;
+    this.name = name || this.constructor.name;
 
     this.message = message || "Something went wrong. Please try again.";
     this.status = status || 500;
@@ -45,7 +46,7 @@ const handleErrorResponse = (err: unknown) => {
       break;
   }
 
-  throw new ResponseError(message, status, extra);
+  throw new ResponseError({ message, status, extra, name });
 };
 
 const errorHandlerMiddleware = (
@@ -54,10 +55,10 @@ const errorHandlerMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const { stack, ...errData } = error;
+  const { stack, status, ...errData } = error;
 
-  return res.status(error.status || 500).json({
-    error: errData,
+  return res.status(status || 500).json({
+    res: errData,
   });
 };
 

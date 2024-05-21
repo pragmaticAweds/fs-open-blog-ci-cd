@@ -1,6 +1,5 @@
 import { Request } from "express";
 import { Document } from "mongoose";
-import UserAccessAttribute from "../components/auth/auth.types";
 
 interface CustomIdAttributes {
   _id: string;
@@ -11,10 +10,26 @@ interface DocCounterAttributes extends Document {
   lastId: number;
 }
 
-interface IRequest extends Request {
+interface IToken {
+  ref: string;
   isCreator?: boolean;
-  UserAccess: UserAccessAttribute;
-  decoded: {};
 }
 
-export { CustomIdAttributes, DocCounterAttributes, IRequest };
+interface IRequest extends Request {
+  decoded?: IToken;
+}
+
+interface ResponseErrorAttributes {
+  message: string;
+  status: number;
+  extra: Record<string, any>;
+  name: string;
+}
+
+export {
+  CustomIdAttributes,
+  DocCounterAttributes,
+  IRequest,
+  IToken,
+  ResponseErrorAttributes,
+};

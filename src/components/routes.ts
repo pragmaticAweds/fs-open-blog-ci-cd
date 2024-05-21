@@ -6,7 +6,7 @@ import authsRouter from "./auth/auth.routes";
 
 const componentRouter = Router();
 
-componentRouter.use("/auths", authsRouter);
+componentRouter.use("/auth", authsRouter);
 componentRouter.use("/blogs", blogsRouter);
 componentRouter.use("/blogs/comments", commentsRouter);
 componentRouter.use("/users", usersRouter);
