@@ -4,7 +4,7 @@ import { DocCounterAttributes } from "../../types";
 import { CommentAttributes } from "./comment.types";
 
 const commentSchema = new Schema<CommentAttributes>({
-  id: String,
+  _id: String,
   text: String,
   Blog: { type: String, ref: "Blog" },
   User: { type: String, ref: "User" },

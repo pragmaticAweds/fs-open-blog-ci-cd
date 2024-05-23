@@ -1,17 +1,22 @@
 import { Router } from "express";
-
-import doFetchBlog from "./blog.actions";
+import {
+  createBlog,
+  editBlog,
+  fetchBlogs,
+  fetchSingleBlog,
+  removeBlog,
+} from "./blog.actions";
 
 const blogsRouter = Router();
 
-blogsRouter.delete("/:blogId", doFetchBlog);
+blogsRouter.delete("/:blogId", removeBlog);
 
-blogsRouter.put("/:blogId", doFetchBlog);
+blogsRouter.put("/:blogId", editBlog);
 
-blogsRouter.get("/:blogId", doFetchBlog);
+blogsRouter.get("/:blogId", fetchSingleBlog);
 
-blogsRouter.post("/", doFetchBlog);
+blogsRouter.post("/", createBlog);
 
-blogsRouter.get("/", doFetchBlog);
+blogsRouter.get("/", fetchBlogs);
 
 export default blogsRouter;

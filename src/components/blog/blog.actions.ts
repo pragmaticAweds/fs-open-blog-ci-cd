@@ -1,12 +1,40 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { handleErrorResponse } from "../../utils/errorHandler";
+import { IRequest } from "../../types";
 
-const doFetchBlog = (req: Request, res: Response) => {
+const createBlog = (req: IRequest, res: Response) => {
   try {
-    throw new Error("kjkjnk");
   } catch (err) {
     handleErrorResponse(err);
   }
 };
 
-export default doFetchBlog;
+const fetchBlogs = (req: IRequest, res: Response) => {
+  try {
+  } catch (err) {
+    handleErrorResponse(err);
+  }
+};
+
+const fetchSingleBlog = (req: IRequest, res: Response) => {
+  try {
+  } catch (err) {
+    handleErrorResponse(err);
+  }
+};
+
+const editBlog = (req: IRequest, res: Response) => {
+  try {
+  } catch (err) {
+    handleErrorResponse(err);
+  }
+};
+
+const removeBlog = (req: IRequest, res: Response) => {
+  try {
+  } catch (err) {
+    handleErrorResponse(err);
+  }
+};
+
+export { createBlog, fetchBlogs, fetchSingleBlog, removeBlog, editBlog };

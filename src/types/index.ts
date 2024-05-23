@@ -12,6 +12,7 @@ interface DocCounterAttributes extends Document {
 
 interface IToken {
   ref: string;
+  username: string;
   isCreator?: boolean;
 }
 

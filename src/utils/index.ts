@@ -1,9 +1,15 @@
 import { NextFunction, Request, Response } from "express";
+
 import { ClientSession, Document, Model } from "mongoose";
+
 import { Schema } from "zod";
 
 import { CustomIdAttributes, DocCounterAttributes } from "../types";
+
 import { handleErrorResponse } from "./errorHandler";
+
+import jwt from "jsonwebtoken";
+import { appConfig } from "../config";
 
 const formatInternalPifId = (id: number) => String(id).padStart(6, "0");
 
@@ -83,7 +89,7 @@ const policyMiddleware =
 const unknownEndpoint = (req: Request, res: Response) =>
   res.status(404).send({ error: "unknown endpoint" });
 
-const handleResponse = (res: Response, data: unknown, status: number) => {
+const handleResponse = (res: Response, data: unknown, status = 200) => {
   if (typeof data === "string")
     return res.status(status).json({ message: data });
 
@@ -100,6 +106,12 @@ const abortSession = async (session: ClientSession) => {
   session.endSession();
 };
 
+const generateToken = async (payload: unknown) => {
+  const { authConfig } = appConfig;
+
+  return jwt.sign(payload as string, authConfig.jwtSecret);
+};
+
 export {
   formatInternalPifId,
   updateModelCounter,
@@ -107,6 +119,7 @@ export {
   policyMiddleware,
   unknownEndpoint,
   handleResponse,
+  generateToken,
   commitSession,
   abortSession,
 };

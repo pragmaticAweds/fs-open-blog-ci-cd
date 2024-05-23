@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import { appConfig } from "../../config";
 
 const userAccessSchema = new Schema<UserAccessAttribute>({
-  id: String,
+  _id: String,
   User: String,
   password: String,
   ref: { type: Number, default: 0 },
@@ -39,11 +39,11 @@ userAccessSchema.pre("save", async function (next) {
   }
 });
 
-const UserAccessCounterModel = model(
+export const UserAccessCounterModel = model(
   "UserAccessCounter",
   userAccessCounterSchema
 );
 
-const UserAccessModel = model("UserAccessModel", userAccessSchema);
+const UserAccessModel = model("UserAccess", userAccessSchema);
 
 export default UserAccessModel;

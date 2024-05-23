@@ -4,7 +4,7 @@ import { DocCounterAttributes } from "../../types";
 import { updateModelCounter } from "../../utils";
 
 const userSchema = new Schema<UserAttributes>({
-  id: String,
+  _id: String,
   username: { type: String, lowercase: true },
   name: { type: String },
   avatar: String,
@@ -16,15 +16,6 @@ userSchema.pre("save", async function (next) {
   await updateModelCounter(this, UserCounterModel);
 
   next();
-});
-
-userSchema.set("toJSON", {
-  transform: async (doc, returnedObj) => {
-    console.log(JSON.stringify({ returnedObj, doc }, null, 2));
-
-    delete returnedObj._id;
-    delete returnedObj.__v;
-  },
 });
 
 const userDocCounterSchema = new Schema<DocCounterAttributes>({
