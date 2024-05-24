@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validatePassword } from "../../utils";
+import { validatePassword } from "../../utils/validators";
 
 const doSignupSchema = z.object({
   name: z.string().trim().toLowerCase(),

@@ -23,7 +23,7 @@ interface IRequest extends Request {
 interface ResponseErrorAttributes {
   message: string;
   status: number;
-  extra: Record<string, any>;
+  extra?: Record<string, any>;
   name: string;
 }
 

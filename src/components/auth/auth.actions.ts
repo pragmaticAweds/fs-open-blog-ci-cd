@@ -50,13 +50,22 @@ const doSignup = async (req: IRequest, res: Response) => {
       password,
     }).save({ session });
 
+    const token = await generateToken({
+      isCreator: is_creator,
+      ref: newUser._id,
+      username,
+    });
+
     await commitSession(session);
 
     return handleResponse(
       res,
       {
         message: "New User Created Successfully",
-        newUser,
+        data: {
+          username,
+          token,
+        },
       },
       201
     );

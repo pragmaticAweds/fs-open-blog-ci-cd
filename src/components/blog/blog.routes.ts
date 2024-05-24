@@ -1,21 +1,66 @@
 import { Router } from "express";
 import {
   createBlog,
+  disLikeBlog,
   editBlog,
   fetchBlogs,
   fetchSingleBlog,
+  likeBlog,
   removeBlog,
 } from "./blog.actions";
+import { verifyToken } from "../auth/auth.middleware";
+import { isCreatorMiddleware, policyMiddleware } from "../../utils";
+import {
+  blogIdSchema,
+  createNewBlogSchema,
+  editBlogSchema,
+} from "./blog.policy";
 
 const blogsRouter = Router();
 
-blogsRouter.delete("/:blogId", removeBlog);
+blogsRouter.patch(
+  "/:blogId/like",
+  policyMiddleware(blogIdSchema, "params"),
+  verifyToken,
+  likeBlog
+);
 
-blogsRouter.put("/:blogId", editBlog);
+blogsRouter.patch(
+  "/:blogId/dislike",
+  policyMiddleware(blogIdSchema, "params"),
+  verifyToken,
+  disLikeBlog
+);
 
-blogsRouter.get("/:blogId", fetchSingleBlog);
+blogsRouter.delete(
+  "/:blogId",
+  policyMiddleware(blogIdSchema, "params"),
+  verifyToken,
+  isCreatorMiddleware,
+  removeBlog
+);
 
-blogsRouter.post("/", createBlog);
+blogsRouter.get(
+  "/:blogId",
+  policyMiddleware(blogIdSchema, "params"),
+  fetchSingleBlog
+);
+
+blogsRouter.put(
+  "/",
+  policyMiddleware(editBlogSchema),
+  verifyToken,
+  isCreatorMiddleware,
+  editBlog
+);
+
+blogsRouter.post(
+  "/",
+  policyMiddleware(createNewBlogSchema),
+  verifyToken,
+  isCreatorMiddleware,
+  createBlog
+);
 
 blogsRouter.get("/", fetchBlogs);
 

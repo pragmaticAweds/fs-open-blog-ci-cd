@@ -7,7 +7,7 @@ export interface BlogAttributes
   title: string;
   author: string;
   url: string;
-  likes: number;
+  likes: string[];
   User: string;
   comments: [];
 }

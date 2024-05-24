@@ -19,7 +19,7 @@ class ResponseError extends Error {
   }
 }
 
-const handleErrorResponse = (err: unknown) => {
+const handleErrorResponse = (err: unknown, statusCode?: number) => {
   let { message, extra, status, name } = err as ResponseError;
 
   switch (true) {
@@ -46,7 +46,12 @@ const handleErrorResponse = (err: unknown) => {
       break;
   }
 
-  throw new ResponseError({ message, status, extra, name });
+  throw new ResponseError({
+    message,
+    status: status || (statusCode as number),
+    extra,
+    name,
+  });
 };
 
 const errorHandlerMiddleware = (
@@ -55,10 +60,13 @@ const errorHandlerMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const { stack, status, ...errData } = error;
+  const { status, message, extra } = error;
 
   return res.status(status || 500).json({
-    res: errData,
+    data: {
+      message,
+      ...(Object.values(extra)?.length && { extra }),
+    },
   });
 };
 

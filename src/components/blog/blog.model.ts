@@ -9,7 +9,7 @@ const blogSchema = new Schema<BlogAttributes>(
     title: String,
     author: String,
     url: String,
-    likes: Number,
+    likes: [{ type: String, ref: "User" }],
     User: { type: String, ref: "User" },
     ref: { type: Number, default: 0 },
   },

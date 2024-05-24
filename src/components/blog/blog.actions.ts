@@ -1,40 +1,166 @@
 import { Response } from "express";
+import { z } from "zod";
+
 import { handleErrorResponse } from "../../utils/errorHandler";
 import { IRequest } from "../../types";
+import BlogModel from "./blog.model";
+import { handleResponse, hasPermission } from "../../utils";
+import { createNewBlogSchema, editBlogSchema } from "./blog.policy";
 
-const createBlog = (req: IRequest, res: Response) => {
+const createBlog = async (req: IRequest, res: Response) => {
+  const { author, title, url }: z.infer<typeof createNewBlogSchema> = req.body;
+
   try {
+    const newBlog = new BlogModel({
+      author,
+      title,
+      url,
+      User: req.decoded?.ref,
+    }).save();
+
+    return handleResponse(res, {
+      message: "Blog updated Successfully.",
+      data: newBlog,
+    });
   } catch (err) {
     handleErrorResponse(err);
   }
 };
 
-const fetchBlogs = (req: IRequest, res: Response) => {
+const fetchBlogs = async (req: IRequest, res: Response) => {
   try {
+    const allBlogs = await BlogModel.find({}).lean();
+
+    return handleResponse(res, {
+      data: allBlogs,
+    });
   } catch (err) {
     handleErrorResponse(err);
   }
 };
 
-const fetchSingleBlog = (req: IRequest, res: Response) => {
+const fetchSingleBlog = async (req: IRequest, res: Response) => {
+  const { blogId } = req.params;
+
   try {
+    const blogExist = await BlogModel.findById(blogId);
+
+    if (!blogExist) return handleResponse(res, "blog does not exists", 404);
+
+    return handleResponse(res, { data: blogExist });
   } catch (err) {
     handleErrorResponse(err);
   }
 };
 
-const editBlog = (req: IRequest, res: Response) => {
+const editBlog = async (req: IRequest, res: Response) => {
+  const { blogId, title, author, url }: z.infer<typeof editBlogSchema> =
+    req.body;
+
   try {
+    const blogExist = await BlogModel.findById(blogId);
+
+    if (!blogExist) return handleResponse(res, "blog does not exists", 404);
+
+    if (!hasPermission(blogExist.User, req)) {
+      return handleResponse(res, "Forbidden", 403);
+    }
+
+    if (title) blogExist.title = title;
+
+    if (author) blogExist.author = author;
+
+    if (url) blogExist.url = url;
+
+    await blogExist.save();
+
+    return handleResponse(res, {
+      message: "Blog updated Successfully.",
+      data: blogExist,
+    });
   } catch (err) {
     handleErrorResponse(err);
   }
 };
 
-const removeBlog = (req: IRequest, res: Response) => {
+const likeBlog = async (req: IRequest, res: Response) => {
+  const { params, decoded } = req;
+
+  const { blogId } = params;
+
   try {
+    const blogExist = await BlogModel.findById(blogId);
+
+    if (!blogExist) return handleResponse(res, "blog does not exists", 404);
+
+    const hasLikedBlog = blogExist.likes.find((user) => user === decoded?.ref);
+
+    if (!hasLikedBlog) {
+      blogExist.likes = blogExist.likes.concat(decoded?.ref as string);
+
+      await blogExist.save();
+    }
+
+    return handleResponse(res, {
+      message: "Blog liked Successfully.",
+      data: blogExist,
+    });
   } catch (err) {
     handleErrorResponse(err);
   }
 };
 
-export { createBlog, fetchBlogs, fetchSingleBlog, removeBlog, editBlog };
+const disLikeBlog = async (req: IRequest, res: Response) => {
+  const { params, decoded } = req;
+
+  const { blogId } = params;
+
+  try {
+    const blogExist = await BlogModel.findById(blogId);
+
+    if (!blogExist) return handleResponse(res, "blog does not exists", 404);
+
+    blogExist.likes = blogExist.likes.filter(
+      (user) => user !== (decoded?.ref as string)
+    );
+
+    if (blogExist.isModified("likes")) await blogExist.save();
+
+    return handleResponse(res, {
+      message: "Blog disliked Successfully.",
+      data: blogExist,
+    });
+  } catch (err) {
+    handleErrorResponse(err);
+  }
+};
+
+const removeBlog = async (req: IRequest, res: Response) => {
+  const { blogId } = req.params;
+
+  try {
+    const blogExist = await BlogModel.findById(blogId);
+
+    if (!blogExist) return handleResponse(res, "blog does not exists", 404);
+
+    if (!hasPermission(blogExist.User, req)) {
+      return handleResponse(res, "Forbidden", 403);
+    }
+
+    await BlogModel.deleteOne({ _id: blogId });
+
+    return handleResponse(res, "Blog deleted successfully.", 204);
+  } catch (err) {
+    handleErrorResponse(err);
+  }
+};
+
+export {
+  createBlog,
+  fetchBlogs,
+  fetchSingleBlog,
+  removeBlog,
+  editBlog,
+  likeBlog,
+  disLikeBlog,
+};

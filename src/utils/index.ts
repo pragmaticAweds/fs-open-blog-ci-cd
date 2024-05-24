@@ -2,13 +2,14 @@ import { NextFunction, Request, Response } from "express";
 
 import { ClientSession, Document, Model } from "mongoose";
 
+import jwt from "jsonwebtoken";
+
 import { Schema } from "zod";
 
-import { CustomIdAttributes, DocCounterAttributes } from "../types";
+import { CustomIdAttributes, DocCounterAttributes, IRequest } from "../types";
 
 import { handleErrorResponse } from "./errorHandler";
 
-import jwt from "jsonwebtoken";
 import { appConfig } from "../config";
 
 const formatInternalPifId = (id: number) => String(id).padStart(6, "0");
@@ -43,13 +44,6 @@ const updateModelCounter = async (
     console.log({ msg: "Error incrementing counter:", err }, "error");
     throw err; // Propagate the error to the caller
   }
-};
-
-const validatePassword = (password: string) => {
-  const strictRegex =
-    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
-
-  return strictRegex.test(password);
 };
 
 const policyMiddleware =
@@ -96,6 +90,32 @@ const handleResponse = (res: Response, data: unknown, status = 200) => {
   return res.status(status).json(data);
 };
 
+const hasPermission = (userId: string, req: IRequest) => {
+  const { decoded } = req;
+
+  if (!userId || !decoded) return false;
+
+  if (!decoded.ref || decoded.ref !== userId) return false;
+
+  return true;
+};
+
+const isCreatorMiddleware = (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { decoded } = req;
+
+    if (!decoded || !decoded.isCreator) throw Error("Forbidden");
+
+    return next();
+  } catch (err) {
+    handleErrorResponse(err, 403);
+  }
+};
+
 const commitSession = async (session: ClientSession) => {
   await session.commitTransaction();
   session.endSession();
@@ -114,11 +134,12 @@ const generateToken = async (payload: unknown) => {
 
 export {
   formatInternalPifId,
+  isCreatorMiddleware,
   updateModelCounter,
-  validatePassword,
   policyMiddleware,
   unknownEndpoint,
   handleResponse,
+  hasPermission,
   generateToken,
   commitSession,
   abortSession,
