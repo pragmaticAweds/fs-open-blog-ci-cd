@@ -16,18 +16,18 @@ const blogSchema = new Schema<BlogAttributes>(
   { timestamps: true }
 );
 
+blogSchema.pre("save", async function (next) {
+  await updateModelCounter(this, BlogCounterModel);
+
+  next();
+});
+
 const blogCounterSchema = new Schema<DocCounterAttributes>(
   {
     lastId: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
-
-blogSchema.pre("save", async function (next) {
-  await updateModelCounter(this, BlogCounterModel);
-
-  next();
-});
 
 const BlogModel = model("Blog", blogSchema);
 

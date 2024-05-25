@@ -17,7 +17,7 @@ const verifyToken = (req: IRequest, res: Response, next: NextFunction) => {
 
     req.decoded = decodedToken as IToken;
 
-    // if (!req.decoded) throw new Error("Forbidden");
+    if (!req.decoded) throw new Error("Forbidden");
 
     return next();
   } catch (err) {

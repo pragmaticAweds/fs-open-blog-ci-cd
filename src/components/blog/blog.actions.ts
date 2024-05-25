@@ -11,7 +11,7 @@ const createBlog = async (req: IRequest, res: Response) => {
   const { author, title, url }: z.infer<typeof createNewBlogSchema> = req.body;
 
   try {
-    const newBlog = new BlogModel({
+    const newBlog = await new BlogModel({
       author,
       title,
       url,
@@ -19,7 +19,7 @@ const createBlog = async (req: IRequest, res: Response) => {
     }).save();
 
     return handleResponse(res, {
-      message: "Blog updated Successfully.",
+      message: "Blog created Successfully.",
       data: newBlog,
     });
   } catch (err) {

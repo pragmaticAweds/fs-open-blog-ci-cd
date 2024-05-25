@@ -8,9 +8,10 @@ import { Schema } from "zod";
 
 import { CustomIdAttributes, DocCounterAttributes, IRequest } from "../types";
 
-import { handleErrorResponse } from "./errorHandler";
+import { ResponseError, handleErrorResponse } from "./errorHandler";
 
 import { appConfig } from "../config";
+import UserModel from "../components/user/user.model";
 
 const formatInternalPifId = (id: number) => String(id).padStart(6, "0");
 
@@ -100,7 +101,7 @@ const hasPermission = (userId: string, req: IRequest) => {
   return true;
 };
 
-const isCreatorMiddleware = (
+const isCreatorMiddleware = async (
   req: IRequest,
   res: Response,
   next: NextFunction
@@ -108,11 +109,17 @@ const isCreatorMiddleware = (
   try {
     const { decoded } = req;
 
-    if (!decoded || !decoded.isCreator) throw Error("Forbidden");
+    if (!decoded || !decoded?.ref) throw Error("Forbidden");
 
-    return next();
+    const userExist = await UserModel.findById(decoded?.ref).lean();
+
+    if (!userExist || !userExist.isCreator) {
+      return handleResponse(res, { data: { message: "Forbidden" } }, 403);
+    }
+
+    next();
   } catch (err) {
-    handleErrorResponse(err, 403);
+    return handleErrorResponse(err, 403);
   }
 };
 

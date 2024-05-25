@@ -24,7 +24,7 @@ interface ResponseErrorAttributes {
   message: string;
   status: number;
   extra?: Record<string, any>;
-  name: string;
+  name?: string;
 }
 
 export {

@@ -5,12 +5,15 @@ import { updateModelCounter } from "../../utils";
 import bcrypt from "bcrypt";
 import { appConfig } from "../../config";
 
-const userAccessSchema = new Schema<UserAccessAttribute>({
-  _id: String,
-  User: String,
-  password: String,
-  ref: { type: Number, default: 0 },
-});
+const userAccessSchema = new Schema<UserAccessAttribute>(
+  {
+    _id: String,
+    User: String,
+    password: String,
+    ref: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
 
 userAccessSchema.methods.comparePassword = function (password: string) {
   return bcrypt.compareSync(password, this.password);
@@ -20,9 +23,12 @@ userAccessSchema.methods.updatePassword = function (password: string) {
   this.password = password;
 };
 
-const userAccessCounterSchema = new Schema<DocCounterAttributes>({
-  lastId: { type: Number, default: 0 },
-});
+const userAccessCounterSchema = new Schema<DocCounterAttributes>(
+  {
+    lastId: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
 
 userAccessSchema.pre("save", async function (next) {
   try {

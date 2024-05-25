@@ -21,36 +21,31 @@ class ResponseError extends Error {
 
 const handleErrorResponse = (err: unknown, statusCode?: number) => {
   let { message, extra, status, name } = err as ResponseError;
-
   switch (true) {
     case name === "CastError":
       message = "Malformatted id";
       status = 400;
       break;
-
     case name === "ValidationError":
       status = 400;
       break;
-
     case name === "JsonWebTokenError":
-      message = "invalid token";
+      message = "Invalid token";
       status = 401;
       break;
-
     case name === "TokenExpiredError":
-      message = "token expired";
+      message = "Token expired";
       status = 401;
       break;
-
     default:
       break;
   }
 
   throw new ResponseError({
-    message,
-    status: status || (statusCode as number),
-    extra,
     name,
+    message,
+    status: (statusCode as number) || status,
+    extra,
   });
 };
 
