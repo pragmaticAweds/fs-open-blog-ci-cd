@@ -8,7 +8,7 @@ const componentRouter = Router();
 
 componentRouter.use("/auth", authsRouter);
 componentRouter.use("/blogs", blogsRouter);
-componentRouter.use("/blogs/comments", commentsRouter);
+componentRouter.use("/comments", commentsRouter);
 componentRouter.use("/users", usersRouter);
 
 export default componentRouter;

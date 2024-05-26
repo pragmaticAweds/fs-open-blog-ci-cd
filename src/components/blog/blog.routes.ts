@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  createBlog,
+  addBlog,
   disLikeBlog,
   editBlog,
   fetchBlogs,
@@ -59,7 +59,7 @@ blogsRouter.post(
   policyMiddleware(createNewBlogSchema),
   verifyToken,
   isCreatorMiddleware,
-  createBlog
+  addBlog
 );
 
 blogsRouter.get("/", fetchBlogs);

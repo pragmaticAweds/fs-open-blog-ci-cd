@@ -7,7 +7,7 @@ import BlogModel from "./blog.model";
 import { handleResponse, hasPermission } from "../../utils";
 import { createNewBlogSchema, editBlogSchema } from "./blog.policy";
 
-const createBlog = async (req: IRequest, res: Response) => {
+const addBlog = async (req: IRequest, res: Response) => {
   const { author, title, url }: z.infer<typeof createNewBlogSchema> = req.body;
 
   try {
@@ -27,7 +27,7 @@ const createBlog = async (req: IRequest, res: Response) => {
   }
 };
 
-const fetchBlogs = async (req: IRequest, res: Response) => {
+const fetchBlogs = async (_req: IRequest, res: Response) => {
   try {
     const allBlogs = await BlogModel.find({}).lean();
 
@@ -156,7 +156,7 @@ const removeBlog = async (req: IRequest, res: Response) => {
 };
 
 export {
-  createBlog,
+  addBlog,
   fetchBlogs,
   fetchSingleBlog,
   removeBlog,
