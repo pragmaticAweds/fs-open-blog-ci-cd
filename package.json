@@ -4,7 +4,7 @@
   "description": "A new edition for blog exercise fs open part 9",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test ts-node-dev src",
+    "test": "NODE_ENV=test vitest",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --transpile-only --exit-child --clear src",
     "build": "tsc -p tsconfig.prod.json",
@@ -23,6 +23,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.12.12",
     "dotenv": "^16.4.5",
+    "supertest": "^7.0.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5",
     "vitest": "^1.6.0",

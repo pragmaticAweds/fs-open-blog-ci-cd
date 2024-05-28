@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 import { appConfig } from ".";
 import { handleErrorResponse } from "../utils/errorHandler";
 
-const connectDb = async () => {
+const connectDb = async (connectString?: string) => {
   try {
     mongoose.set("debug", {
       color: true,
     });
 
-    await mongoose.connect(appConfig.db_url);
+    await mongoose.connect(appConfig.db_url as string);
 
     console.log("Database connection successful.");
   } catch (err) {

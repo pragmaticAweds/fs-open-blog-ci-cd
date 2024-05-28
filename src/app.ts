@@ -4,15 +4,20 @@ import componentRouter from "./components/routes";
 import { errorHandlerMiddleware } from "./utils/errorHandler";
 import { connectDb } from "./config/persistence";
 import initiateCounterModel from "./config/initiateCounterModels";
+import { appConfig } from "./config";
 
 const app = express();
+
+const initializeDB = async () => {
+  await connectDb();
+  await initiateCounterModel();
+};
 
 const initializeApp = () => {
   try {
     app.use(helmet());
     app.use(express.json());
 
-    initiateCounterModel();
     app.use(componentRouter);
 
     app.use(errorHandlerMiddleware);
@@ -21,8 +26,10 @@ const initializeApp = () => {
   }
 };
 
-connectDb()
-  .then((res) => initializeApp())
-  .catch((err) => err);
+initializeApp();
+
+if (!appConfig.isTesting) {
+  initializeDB();
+}
 
 export default app;
