@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { appConfig } from ".";
 import { handleErrorResponse } from "../utils/errorHandler";
 
-const connectDb = async (connectString?: string) => {
+const connectDb = async () => {
   try {
     mongoose.set("debug", {
       color: true,

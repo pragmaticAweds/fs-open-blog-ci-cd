@@ -4,8 +4,6 @@ import { env } from "process";
 
 dotenv.config();
 
-console.log(env.PORT);
-
 const appConfig = {
   isTesting: env.NODE_ENV === "test",
   port: env.PORT || 5000,

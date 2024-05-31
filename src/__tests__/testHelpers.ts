@@ -1,4 +1,6 @@
+import { Document, Model } from "mongoose";
 import { ZodError, z } from "zod";
+import { CustomIdAttributes } from "../types";
 
 const validateSchema = <T>(schema: z.Schema<T>, data: unknown) => {
   try {
@@ -13,4 +15,12 @@ const validateSchema = <T>(schema: z.Schema<T>, data: unknown) => {
   }
 };
 
-export { validateSchema };
+const removeDbCollections = async (collections: Model<unknown>[]) => {
+  try {
+    await Promise.all(collections.map(async (Model) => Model.deleteMany()));
+
+    console.log("Db cleared");
+  } catch (err) {}
+};
+
+export { validateSchema, removeDbCollections };
