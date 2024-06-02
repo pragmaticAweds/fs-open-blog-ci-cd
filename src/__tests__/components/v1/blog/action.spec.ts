@@ -1,7 +1,7 @@
-import { beforeAll, beforeEach, describe, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, it, test } from "vitest";
 import supertest from "supertest";
 
-import { connectDb } from "../../../../config/persistence";
+import { closeDb, connectDb } from "../../../../config/persistence";
 
 import BlogModel, {
   BlogCounterModel,
@@ -17,11 +17,11 @@ import initiateCounterModel from "../../../../config/initiateCounterModels";
 
 const api = supertest(app);
 
-beforeAll(async () => {
-  await connectDb();
+beforeAll(() => {
+  connectDb();
 });
 
-beforeEach(async () => {
+beforeEach(() => {
   const collections = [
     BlogModel,
     BlogCounterModel,
@@ -29,13 +29,45 @@ beforeEach(async () => {
     UserCounterModel,
   ] as unknown as Model<unknown>[];
 
-  await removeDbCollections(collections);
-}, 10_000);
+  removeDbCollections(collections);
+});
 
-describe("Testing all blogs", () => {
-  it("all blogs are returned", async ({ expect }) => {
+describe("Testing blogs", () => {
+  test("all blogs are returned", async ({ expect }) => {
     const response = await api.get("/api/blogs");
-    console.log(response.status);
-    expect(response.body).toHaveLength(blogs.length);
+    expect(response.body.data).toHaveLength(blogs.length);
+  }, 7_000);
+  test("Blogs are returned as json", async () => {
+    await api
+      .get("/api/blogs")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
   });
+});
+
+afterAll(() => {
+  closeDb();
+});
+
+beforeEach(async () => {
+  const newUser = {
+    username: "john_doe",
+    password: "John.Doe1",
+    name: "john doe",
+  };
+
+  const loginUser = {
+    username: "john_doe",
+    password: "John.Doe1",
+  };
+
+  const result = await api.post("/api/auth/signup").send(newUser);
+
+  console.log(result.statusCode);
+
+  const tokenResult = await api.post("/api/auth/login").send(loginUser);
+
+  console.log(result.statusCode);
+
+  let headers = `bearer ${tokenResult.body.token}`;
 });

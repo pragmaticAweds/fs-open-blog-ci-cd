@@ -27,4 +27,14 @@ const closeDb = async () => {
   }
 };
 
+// const closeDbConnection = async () => {
+//   try {
+//     await mongoose.connection.close();
+
+//     console.log("Connection closed successfully");
+//   } catch (err) {
+//     handleErrorResponse(err);
+//   }
+// };
+
 export { connectDb, closeDb };

@@ -18,7 +18,7 @@ const initializeApp = () => {
     app.use(helmet());
     app.use(express.json());
 
-    app.use(componentRouter);
+    app.use("/api", componentRouter);
 
     app.use(errorHandlerMiddleware);
   } catch (err) {

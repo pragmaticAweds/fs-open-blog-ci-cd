@@ -37,6 +37,9 @@ const handleErrorResponse = (err: unknown, statusCode?: number) => {
       message = "Token expired";
       status = 401;
       break;
+    case name === "MongooseError":
+      status = 400;
+      break;
     default:
       break;
   }
