@@ -19,12 +19,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  const collections = [
-    BlogModel,
-    BlogCounterModel,
-    UserModel,
-    UserCounterModel,
-  ] as unknown as Model<unknown>[];
+  const collections = [BlogModel, UserModel] as unknown as Model<unknown>[];
 
   await removeDbCollections(collections);
 });
