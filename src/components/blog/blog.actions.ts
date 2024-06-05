@@ -18,10 +18,14 @@ const addBlog = async (req: IRequest, res: Response) => {
       User: req.decoded?.ref,
     }).save();
 
-    return handleResponse(res, {
-      message: "Blog created Successfully.",
-      data: newBlog,
-    });
+    return handleResponse(
+      res,
+      {
+        message: "Blog created Successfully.",
+        data: newBlog,
+      },
+      201
+    );
   } catch (err) {
     handleErrorResponse(err);
   }

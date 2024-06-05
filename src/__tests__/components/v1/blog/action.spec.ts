@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe, test } from "vitest";
+import { afterAll, assert, beforeAll, describe, test } from "vitest";
 import supertest from "supertest";
 
 import { closeDb, connectDb } from "../../../../config/persistence";
@@ -9,31 +9,30 @@ import BlogModel, {
 import UserModel, {
   UserCounterModel,
 } from "../../../../components/user/user.model";
-import { removeDbCollections } from "../../../testHelpers";
 import { Model } from "mongoose";
-import { blogs, blogsInDb } from "./helper";
+import { blogsInDb, newBlogs } from "./helper";
 import app from "../../../../app";
-import initiateCounterModel from "../../../../config/initiateCounterModels";
+import {
+  initiateCounterModel,
+  removeCounterModel,
+} from "../../../../config/initiateCounterModels";
+import { removeDbCollections } from "../../../testHelpers";
+import UserAccessModel from "../../../../components/auth/auth.model";
 
 const api = supertest(app);
 
-beforeAll(() => {
-  connectDb();
-  initiateCounterModel();
+beforeAll(async () => {
+  await connectDb();
+  await initiateCounterModel();
 });
 
-beforeEach(() => {
-  const collections = [BlogModel, UserModel] as unknown as Model<unknown>[];
-
-  removeDbCollections(collections);
+afterAll(async () => {
+  await removeCounterModel();
+  await closeDb();
 });
 
 describe("Testing blogs", () => {
-  test("all blogs are returned", async ({ expect }) => {
-    const response = await api.get("/api/blogs");
-    expect(response.body.data).toHaveLength(blogs.length);
-  });
-  test("Blogs are returned as json", async () => {
+  test("all Blogs are returned as json", async () => {
     await api
       .get("/api/blogs")
       .expect(200)
@@ -41,59 +40,80 @@ describe("Testing blogs", () => {
   });
 });
 
-afterAll(() => {
-  const collections = [
-    BlogCounterModel,
-    UserCounterModel,
-  ] as unknown as Model<unknown>[];
-
-  removeDbCollections(collections);
-  closeDb();
-});
-
-let headers;
-
-beforeEach(async () => {
-  const newUser = {
-    username: "john_doe",
-    password: "John.Doe1",
-    name: "john doe",
-    is_creator: true,
-  };
-
-  const loginUser = {
-    username: "john_doe",
-    password: "John.Doe1",
-  };
-
-  const result = await api.post("/api/auth/signup").send(newUser);
-
-  console.log("signup", result.statusCode);
-
-  const tokenResult = await api.post("/api/auth/login").send(loginUser);
-
-  console.log(result.statusCode);
-
-  headers = `bearer ${tokenResult.body.token}`;
-});
-
 describe("Create new blog", () => {
-  test("verify new blog is posted successfully", async ({ expect }) => {
-    const localDb = await blogsInDb();
-    const newBlog = localDb[0];
+  let headers = "";
 
+  const newBlog = newBlogs[1];
+
+  beforeAll(async () => {
+    const newUser = {
+      username: "john_doe",
+      password: "John.Doe1",
+      name: "john doe",
+      is_creator: true,
+    };
+
+    const loginUser = {
+      username: "john_doe",
+      password: "John.Doe1",
+    };
+
+    await api.post("/api/auth/signup").send(newUser);
+
+    const { body } = await api.post("/api/auth/login").send(loginUser);
+
+    headers = `Bearer ${body.data.token}`;
+  });
+
+  afterAll(async () => {
+    const collections = [
+      UserModel,
+      UserAccessModel,
+      BlogModel,
+    ] as unknown as Model<unknown>[];
+
+    await removeDbCollections(collections);
+  });
+
+  test("verify new blog is posted successfully", async ({ expect }) => {
     await api
       .post("/api/blogs")
-      .set("Authorization", headers)
+      .set("authorization", headers)
       .send(newBlog)
       .expect(201)
       .expect("Content-Type", /application\/json/);
 
-    const result = await api.get("/api/blogs");
-    expect(result.body).toHaveLength(blogs.length + 1);
+    const { body } = await api.get("/api/blogs");
 
-    const contents = result.body.map((content) => content.title);
+    const blogs = await blogsInDb();
 
-    expect(contents).toContain("First classs");
-  }, 30_000);
+    expect(body.data).toHaveLength(blogs.length);
+  });
+
+  test("ref field is equal to last document id", async () => {
+    const {
+      body: { data },
+    } = await api
+      .post("/api/blogs")
+      .set("authorization", headers)
+      .send(newBlog);
+
+    const blogTracker = await BlogCounterModel.findOne();
+
+    const lastBlogId = blogTracker?.lastId;
+
+    assert.strictEqual(data.ref, lastBlogId);
+
+    assert.isTrue(data._id.endsWith(String(lastBlogId)));
+  });
+
+  test("Incomplete blog returns 400 Bad Request", async ({ expect }) => {
+    const { title, author } = newBlog;
+
+    await api
+      .post("/api/blogs")
+      .set("authorization", headers)
+      .send({ title, author })
+      .expect(400);
+  });
 });

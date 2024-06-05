@@ -5,16 +5,16 @@ import { UserCounterModel } from "../components/user/user.model";
 import { DocCounterAttributes } from "../types";
 import { UserAccessCounterModel } from "../components/auth/auth.model";
 
-const initiateCounterModel = async () => {
-  const counterModels = [
-    UserCounterModel,
-    UserAccessCounterModel,
-    BlogCounterModel,
-    CommentCounterModel,
-  ] as Model<DocCounterAttributes>[];
+const counterModels = [
+  UserCounterModel,
+  UserAccessCounterModel,
+  BlogCounterModel,
+  CommentCounterModel,
+] as Model<DocCounterAttributes>[];
 
+const initiateCounterModel = async (models?: Model<DocCounterAttributes>[]) => {
   await Promise.all(
-    counterModels.map(async (Model) => {
+    (models || counterModels).map(async (Model) => {
       const counterExists = await Model.findOne({}).lean();
 
       if (!counterExists) return new Model({}).save();
@@ -24,4 +24,14 @@ const initiateCounterModel = async () => {
   );
 };
 
-export default initiateCounterModel;
+const removeCounterModel = async (models?: Model<DocCounterAttributes>[]) => {
+  try {
+    await Promise.all(
+      (models || counterModels).map((Model) => Model.deleteOne())
+    );
+
+    console.log("Counters removed cleared");
+  } catch (err) {}
+};
+
+export { initiateCounterModel, removeCounterModel };

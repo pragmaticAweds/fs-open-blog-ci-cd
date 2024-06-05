@@ -12,18 +12,17 @@ import UserModel, {
 import { removeDbCollections } from "../../../testHelpers";
 import { Model } from "mongoose";
 
-const api = supertest(app);
+// const api = supertest(app);
 
-beforeAll(async () => {
-  await connectDb();
-});
+// beforeAll(async () => {
+//   await connectDb();
+// });
 
-beforeEach(async () => {
-  const collections = [BlogModel, UserModel] as unknown as Model<unknown>[];
+// beforeEach(async () => {
+//   const collections = [BlogModel, UserModel] as unknown as Model<unknown>[];
+//   await removeDbCollections(collections);
+// });
 
-  await removeDbCollections(collections);
-});
-
-describe("Validate Auth Actions", () => {
-  it("User signed up successfully", ({ expect }) => {});
-});
+// describe("Validate Auth Actions", () => {
+//   it("User signed up successfully", ({ expect }) => {});
+// });
