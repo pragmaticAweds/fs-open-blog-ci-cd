@@ -35,7 +35,15 @@ const blogsInDb = async () => {
   return newBlogs.map((blog) => blog.toJSON());
 };
 
-const createNewBlog = async () =>
-  Promise.all(newBlogs.map((blog) => new BlogModel(blog).save()));
+// const createNewBlogs = async () =>
+//   Promise.all(newBlogs.map((blog) => new BlogModel(blog).save()));
 
-export { nonExistingLikes, defaultLikes, blogsInDb, createNewBlog, newBlogs };
+const createNewBlogs = async () => {
+  for (const blog of newBlogs) {
+    await new BlogModel(blog).save();
+  }
+
+  console.log("done!!!");
+};
+
+export { nonExistingLikes, defaultLikes, blogsInDb, createNewBlogs, newBlogs };

@@ -13,7 +13,7 @@ import { ResponseError, handleErrorResponse } from "./errorHandler";
 import { appConfig } from "../config";
 import UserModel from "../components/user/user.model";
 
-const formatInternalPifId = (id: number) => String(id).padStart(6, "0");
+const incrementDocId = (id: number) => String(id).padStart(6, "0");
 
 const updateModelCounter = async (
   doc: Document & CustomIdAttributes,
@@ -33,7 +33,7 @@ const updateModelCounter = async (
 
       doc.ref = lastId + 1;
 
-      doc._id = formatInternalPifId(doc.ref);
+      doc._id = incrementDocId(doc.ref);
 
       return CounterModel.updateOne(
         { _id: counterId },
@@ -140,7 +140,7 @@ const generateToken = async (payload: unknown) => {
 };
 
 export {
-  formatInternalPifId,
+  incrementDocId,
   isCreatorMiddleware,
   updateModelCounter,
   policyMiddleware,
