@@ -58,11 +58,14 @@ const fetchSingleBlog = async (req: IRequest, res: Response) => {
 };
 
 const editBlog = async (req: IRequest, res: Response) => {
-  const { blogId, title, author, url }: z.infer<typeof editBlogSchema> =
-    req.body;
+  const { body, params } = req;
+
+  const { title, author, url }: z.infer<typeof createNewBlogSchema> = body;
 
   try {
-    const blogExist = await BlogModel.findById(blogId);
+    const blogExist = await BlogModel.findById(params.blogId);
+
+    console.log({ blogExist });
 
     if (!blogExist) return handleResponse(res, "blog does not exists", 404);
 

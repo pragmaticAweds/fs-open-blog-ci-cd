@@ -10,10 +10,6 @@ const blogIdSchema = z.object({
   blogId: z.string().trim(),
 });
 
-const editBlogSchema = blogIdSchema.extend({
-  title: z.string().optional(),
-  author: z.string().optional(),
-  url: z.string().trim().url().optional(),
-});
+const editBlogSchema = createNewBlogSchema.optional();
 
 export { createNewBlogSchema, blogIdSchema, editBlogSchema };

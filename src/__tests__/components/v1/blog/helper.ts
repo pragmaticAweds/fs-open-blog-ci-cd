@@ -39,9 +39,9 @@ const newBlogs = [
 //   return Promise.all(newBlogs.map((blog) => new BlogModel(blog).save()));
 // };
 
-const createNewBlogs = async () => {
+const createNewBlogs = async (userId?: string) => {
   for (const blog of newBlogs) {
-    await new BlogModel(blog).save();
+    await new BlogModel({ ...blog, ...(userId && { User: userId }) }).save();
   }
 };
 

@@ -47,7 +47,7 @@ blogsRouter.get(
 );
 
 blogsRouter.put(
-  "/",
+  "/:blogId",
   policyMiddleware(editBlogSchema),
   verifyToken,
   isCreatorMiddleware,
