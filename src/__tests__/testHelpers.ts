@@ -1,6 +1,11 @@
 import { Document, Model } from "mongoose";
 import { ZodError, z } from "zod";
 import { CustomIdAttributes } from "../types";
+import { closeDb, connectDb } from "../config/persistence";
+import {
+  initiateCounterModel,
+  removeCounterModel,
+} from "../config/initiateCounterModels";
 
 const validateSchema = <T>(schema: z.Schema<T>, data: unknown) => {
   try {
@@ -23,4 +28,19 @@ const removeDbCollections = async (collections: Model<unknown>[]) => {
   } catch (err) {}
 };
 
-export { validateSchema, removeDbCollections };
+const initializeTestEnvironment = async () => {
+  await connectDb();
+  await initiateCounterModel();
+};
+
+const cleanupTestEnvironment = async () => {
+  await removeCounterModel();
+  await closeDb();
+};
+
+export {
+  validateSchema,
+  removeDbCollections,
+  initializeTestEnvironment,
+  cleanupTestEnvironment,
+};

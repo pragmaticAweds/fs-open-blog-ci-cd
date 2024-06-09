@@ -14,21 +14,28 @@ import {
   initiateCounterModel,
   removeCounterModel,
 } from "../../../../config/initiateCounterModels";
-import { removeDbCollections } from "../../../testHelpers";
+import {
+  cleanupTestEnvironment,
+  initializeTestEnvironment,
+  removeDbCollections,
+} from "../../../testHelpers";
 import UserAccessModel from "../../../../components/auth/auth.model";
 import { creatorLoginDetails, newCreatorDetails } from "../../../testDatas";
 
 const api = supertest(app);
 
-beforeAll(async () => {
-  await connectDb();
-  await initiateCounterModel();
-});
+const collections = [
+  UserModel,
+  UserAccessModel,
+  BlogModel,
+] as unknown as Model<unknown>[];
 
-afterAll(async () => {
-  await removeCounterModel();
-  await closeDb();
-});
+const clearCollections = async () => {
+  await removeDbCollections(collections);
+};
+
+beforeAll(initializeTestEnvironment);
+afterAll(cleanupTestEnvironment);
 
 describe("GET /blogs", () => {
   beforeAll(async () => {
@@ -48,21 +55,15 @@ describe("GET /blogs", () => {
 
   it("should fetch a single blog", async () => {
     await api.get("/api/blogs/1").expect(404);
-
     await api.get("/api/blogs/000001").expect(200);
   });
 });
 
 describe("ADD and EDIT Blog API", () => {
-  let headers = "";
+  let headers = "",
+    existingDocId = "";
 
-  const [newBlog, editBlog, ...blogData] = newBlogs;
-
-  const collections = [
-    UserModel,
-    UserAccessModel,
-    BlogModel,
-  ] as unknown as Model<unknown>[];
+  const [newBlog, editBlog] = newBlogs;
 
   beforeAll(async () => {
     await api.post("/api/auth/signup").send(newCreatorDetails);
@@ -74,9 +75,7 @@ describe("ADD and EDIT Blog API", () => {
     headers = `Bearer ${body.data.token}`;
   });
 
-  afterAll(async () => {
-    await removeDbCollections(collections);
-  });
+  afterAll(clearCollections);
 
   describe("POST /blogs", () => {
     it("should add a new blog", async ({ expect }) => {
@@ -88,6 +87,8 @@ describe("ADD and EDIT Blog API", () => {
         .expect("Content-Type", /application\/json/);
 
       const blogs = await blogsInDb();
+
+      existingDocId = body.data._id;
 
       expect(blogs.length).toEqual(1);
       expect(body.data.title).toEqual(newBlog.title);
@@ -108,11 +109,9 @@ describe("ADD and EDIT Blog API", () => {
         .send(newBlog);
 
       const blogTracker = await BlogCounterModel.findOne();
-
       const lastBlogId = blogTracker?.lastId;
 
       assert.strictEqual(data.ref, lastBlogId);
-
       assert.isTrue(data._id.endsWith(String(lastBlogId)));
     });
 
@@ -147,7 +146,6 @@ describe("ADD and EDIT Blog API", () => {
       const blog = body.data;
 
       expect(blog).toHaveProperty("likes");
-
       assert.deepEqual(blog.likes, []);
     });
   });
@@ -155,19 +153,7 @@ describe("ADD and EDIT Blog API", () => {
   describe("EDIT /blogs/:blogId", () => {
     it("should edit blog successfully", async ({ expect }) => {
       const { body } = await api
-        .put("/api/blogs/000001")
-        .set("authorization", headers)
-        .send(editBlog)
-        .expect(200);
-
-      expect(body.data.title).toEqual(editBlog.title);
-      expect(body.data.author).toEqual(editBlog.author);
-      assert.strictEqual(body.data.url, editBlog.url);
-    });
-
-    it("should return 403 for unauthorized creator", async ({ expect }) => {
-      const { body } = await api
-        .put("/api/blogs/000001")
+        .put(`/api/blogs/${existingDocId}`)
         .set("authorization", headers)
         .send(editBlog)
         .expect(200);
