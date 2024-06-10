@@ -46,7 +46,7 @@ blogsRouter.get(
   fetchSingleBlog
 );
 
-blogsRouter.put(
+blogsRouter.patch(
   "/:blogId",
   policyMiddleware(editBlogSchema),
   verifyToken,

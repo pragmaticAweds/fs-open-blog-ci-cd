@@ -153,7 +153,7 @@ describe("ADD and EDIT Blog API", () => {
   describe("EDIT /blogs/:blogId", () => {
     it("should edit blog successfully", async ({ expect }) => {
       const { body } = await api
-        .put(`/api/blogs/${existingDocId}`)
+        .patch(`/api/blogs/${existingDocId}`)
         .set("authorization", headers)
         .send(editBlog)
         .expect(200);
@@ -161,6 +161,21 @@ describe("ADD and EDIT Blog API", () => {
       expect(body.data.title).toEqual(editBlog.title);
       expect(body.data.author).toEqual(editBlog.author);
       assert.strictEqual(body.data.url, editBlog.url);
+    });
+  });
+
+  describe("Delete /blogs/:blogId", () => {
+    it("should delete blog successfully", async ({ expect }) => {
+      await api
+        .delete(`/api/blogs/${existingDocId}`)
+        .set("authorization", headers)
+        .expect(204);
+
+      await api.get(`/api/blogs/${existingDocId}`).expect(404);
+
+      // expect(body.data.title).toEqual(editBlog.title);
+      // expect(body.data.author).toEqual(editBlog.author);
+      // assert.strictEqual(body.data.url, editBlog.url);
     });
   });
 });
