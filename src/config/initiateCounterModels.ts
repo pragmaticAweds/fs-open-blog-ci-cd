@@ -24,14 +24,19 @@ const initiateCounterModel = async (models?: Model<DocCounterAttributes>[]) => {
   );
 };
 
-const removeCounterModel = async (models?: Model<DocCounterAttributes>[]) => {
-  try {
-    await Promise.all(
-      (models || counterModels).map((Model) => Model.deleteOne())
-    );
+const removeCounterModel = async (models?: Model<DocCounterAttributes>[]) =>
+  Promise.all((models || counterModels).map((Model) => Model.deleteOne()));
 
-    console.log("Counters removed cleared");
-  } catch (err) {}
-};
+const resetCounterModel = async (models?: Model<DocCounterAttributes>[]) =>
+  Promise.all(
+    (models || counterModels).map((Model) =>
+      Model.updateOne(
+        {},
+        {
+          $set: { lastId: 0 },
+        }
+      )
+    )
+  );
 
-export { initiateCounterModel, removeCounterModel };
+export { initiateCounterModel, removeCounterModel, resetCounterModel };

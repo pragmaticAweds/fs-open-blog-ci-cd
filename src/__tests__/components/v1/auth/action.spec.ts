@@ -23,6 +23,6 @@ import { Model } from "mongoose";
 //   await removeDbCollections(collections);
 // });
 
-// describe("Validate Auth Actions", () => {
-//   it("User signed up successfully", ({ expect }) => {});
-// });
+describe("Validate Auth Actions", () => {
+  it("User signed up successfully", ({ expect }) => {});
+});
