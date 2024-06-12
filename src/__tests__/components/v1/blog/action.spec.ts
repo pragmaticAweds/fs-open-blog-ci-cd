@@ -1,7 +1,5 @@
-import { afterAll, assert, beforeAll, describe, it, test } from "vitest";
+import { afterAll, assert, beforeAll, describe, it } from "vitest";
 import supertest from "supertest";
-
-import { closeDb, connectDb } from "../../../../config/persistence";
 
 import BlogModel, {
   BlogCounterModel,
@@ -10,11 +8,7 @@ import UserModel from "../../../../components/user/user.model";
 import { Model } from "mongoose";
 import { blogsInDb, createNewBlogs, newBlogs } from "./helper";
 import app from "../../../../app";
-import {
-  initiateCounterModel,
-  removeCounterModel,
-  resetCounterModel,
-} from "../../../../config/initiateCounterModels";
+import { resetCounterModel } from "../../../../config/initiateCounterModels";
 import {
   cleanupTestEnvironment,
   initializeTestEnvironment,
@@ -77,8 +71,6 @@ describe("ADD and EDIT Blog API", () => {
 
     user_one_token = `Bearer ${body.data.token}`;
 
-    console.log({ user_one_token });
-
     const { username: creator2Username, password: creator2Password } =
       creator_two;
 
@@ -87,8 +79,6 @@ describe("ADD and EDIT Blog API", () => {
       .send({ username: creator2Username, password: creator2Password });
 
     user_two_token = `Bearer ${response.data.token}`;
-
-    console.log({ user_two_token });
   });
 
   afterAll(clearCollections);
@@ -166,32 +156,43 @@ describe("ADD and EDIT Blog API", () => {
     });
   });
 
-  // describe("EDIT /blogs/:blogId", () => {
-  //   it("should edit blog successfully", async ({ expect }) => {
-  //     const { body } = await api
-  //       .patch(`/api/blogs/${existingDocId}`)
-  //       .set("authorization", user_one_token)
-  //       .send(editBlog)
-  //       .expect(200);
+  describe("EDIT /blogs/:blogId", () => {
+    it("should edit blog successfully", async ({ expect }) => {
+      const { body } = await api
+        .patch(`/api/blogs/${existingDocId}`)
+        .set("authorization", user_one_token)
+        .send(editBlog)
+        .expect(200);
 
-  //     expect(body.data.title).toEqual(editBlog.title);
-  //     expect(body.data.author).toEqual(editBlog.author);
-  //     assert.strictEqual(body.data.url, editBlog.url);
-  //   });
-  // });
+      expect(body.data.title).toEqual(editBlog.title);
+      expect(body.data.author).toEqual(editBlog.author);
+      assert.strictEqual(body.data.url, editBlog.url);
+    });
 
-  // describe("Delete /blogs/:blogId", () => {
-  //   it("should delete blog successfully", async ({ expect }) => {
-  //     await api
-  //       .delete(`/api/blogs/${existingDocId}`)
-  //       .set("authorization", user_one_token)
-  //       .expect(204);
+    it("should return 403 for unauthorized editing of blog", async () => {
+      await api
+        .patch(`/api/blogs/${existingDocId}`)
+        .set("authorization", user_two_token)
+        .send(editBlog)
+        .expect(403);
+    });
+  });
 
-  //     await api.get(`/api/blogs/${existingDocId}`).expect(404);
+  describe("Delete /blogs/:blogId", () => {
+    it("should return 403 for unauthorized deleting of blog", async () => {
+      await api
+        .delete(`/api/blogs/${existingDocId}`)
+        .set("authorization", user_two_token)
+        .expect(403);
+    });
 
-  //     // expect(body.data.title).toEqual(editBlog.title);
-  //     // expect(body.data.author).toEqual(editBlog.author);
-  //     // assert.strictEqual(body.data.url, editBlog.url);
-  //   });
-  // });
+    it("should delete blog successfully", async () => {
+      await api
+        .delete(`/api/blogs/${existingDocId}`)
+        .set("authorization", user_one_token)
+        .expect(204);
+
+      await api.get(`/api/blogs/${existingDocId}`).expect(404);
+    });
+  });
 });

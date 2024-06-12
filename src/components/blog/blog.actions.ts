@@ -65,8 +65,6 @@ const editBlog = async (req: IRequest, res: Response) => {
   try {
     const blogExist = await BlogModel.findById(params.blogId);
 
-    console.log({ blogExist });
-
     if (!blogExist) return handleResponse(res, "blog does not exists", 404);
 
     if (!hasPermission(blogExist.User, req)) {
