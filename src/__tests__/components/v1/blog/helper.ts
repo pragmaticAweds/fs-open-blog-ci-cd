@@ -1,16 +1,5 @@
 import BlogModel from "../../../../components/blog/blog.model";
 
-const defaultLikes = (obj) =>
-  !obj.hasOwnProperty("likes") ? { ...obj, likes: 0 } : obj;
-
-const nonExistingLikes = async () => {
-  const receivedBlogs = await BlogModel.find({});
-  return receivedBlogs.map((blog) => {
-    // if (!blog.hasOwnProperty("likes")) return { ...blog, likes: 0 };
-    return blog.toJSON();
-  });
-};
-
 const blogsInDb = async () => {
   const newBlogs = await BlogModel.find({});
   return newBlogs.map((blog) => blog.toJSON());
@@ -35,14 +24,10 @@ const newBlogs = [
   },
 ];
 
-// const createNewBlogs = async () => {
-//   return Promise.all(newBlogs.map((blog) => new BlogModel(blog).save()));
-// };
-
 const createNewBlogs = async (userId?: string) => {
   for (const blog of newBlogs) {
     await new BlogModel({ ...blog, ...(userId && { User: userId }) }).save();
   }
 };
 
-export { nonExistingLikes, defaultLikes, blogsInDb, createNewBlogs, newBlogs };
+export { blogsInDb, createNewBlogs, newBlogs };

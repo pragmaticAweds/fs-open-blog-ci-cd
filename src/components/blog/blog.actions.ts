@@ -5,7 +5,7 @@ import { handleErrorResponse } from "../../utils/errorHandler";
 import { IRequest } from "../../types";
 import BlogModel from "./blog.model";
 import { handleResponse, hasPermission } from "../../utils";
-import { createNewBlogSchema, editBlogSchema } from "./blog.policy";
+import { createNewBlogSchema } from "./blog.policy";
 
 const addBlog = async (req: IRequest, res: Response) => {
   const { author, title, url }: z.infer<typeof createNewBlogSchema> = req.body;

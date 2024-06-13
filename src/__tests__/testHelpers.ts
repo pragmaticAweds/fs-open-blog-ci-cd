@@ -1,11 +1,15 @@
-import { Document, Model } from "mongoose";
+import { Model } from "mongoose";
 import { ZodError, z } from "zod";
-import { CustomIdAttributes } from "../types";
 import { closeDb, connectDb } from "../config/persistence";
 import {
   initiateCounterModel,
   removeCounterModel,
 } from "../config/initiateCounterModels";
+import CommentModel from "../components/comment/comment.model";
+
+import UserAccessModel from "../components/auth/auth.model";
+import BlogModel from "../components/blog/blog.model";
+import UserModel from "../components/user/user.model";
 
 const validateSchema = <T>(schema: z.Schema<T>, data: unknown) => {
   try {

@@ -156,6 +156,31 @@ describe("ADD and EDIT Blog API", () => {
     });
   });
 
+  describe("PATCH /blogs/:blogId/like and /blogs/:blogId/dislike", () => {
+    it("should allow user to like a blog", async ({ expect }) => {
+      const { body } = await api
+        .patch(`/api/blogs/${existingDocId}/like`)
+        .set("authorization", user_two_token)
+        .expect(200);
+
+      const likedBlog = body.data;
+
+      assert.strictEqual(likedBlog.likes.length, 1);
+      expect(likedBlog.likes).contains("000002");
+    });
+
+    it("should allow user to dislike a blog", async ({ expect }) => {
+      const { body } = await api
+        .patch(`/api/blogs/${existingDocId}/dislike`)
+        .set("authorization", user_two_token)
+        .expect(200);
+
+      const likedBlog = body.data;
+
+      assert.strictEqual(likedBlog.likes.length, 0);
+    });
+  });
+
   describe("EDIT /blogs/:blogId", () => {
     it("should edit blog successfully", async ({ expect }) => {
       const { body } = await api

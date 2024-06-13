@@ -5,7 +5,6 @@ import { verifyToken } from "../auth/auth.middleware";
 
 import {
   commentSchema,
-  commentIdSchema,
   addCommentSchema,
   editCommentSchema,
 } from "./comment.policy";
