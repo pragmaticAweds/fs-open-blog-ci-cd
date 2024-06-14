@@ -55,7 +55,6 @@ describe("Add Comment to a blog", () => {
       .send({ username, password });
 
     user_one_token = `Bearer ${body.data.token}`;
-    blog = await BlogModel.findOne();
   });
   it("POST /comments", async () => {});
 });
