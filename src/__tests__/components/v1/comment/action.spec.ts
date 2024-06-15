@@ -15,7 +15,11 @@ import { createNewUsers } from "../user/helper";
 import app from "../../../../app";
 import UserModel from "../../../../components/user/user.model";
 import UserAccessModel from "../../../../components/auth/auth.model";
-import { removeCounterModel } from "../../../../config/initiateCounterModels";
+import {
+  initiateCounterModel,
+  removeCounterModel,
+} from "../../../../config/initiateCounterModels";
+import { connectDb } from "../../../../config/persistence";
 
 const api = supertest(app);
 
@@ -27,10 +31,12 @@ const collections = [
 ] as unknown as Model<unknown>[];
 
 beforeAll(async () => {
+  await connectDb();
+
   await Promise.all([removeCounterModel(), removeDbCollections(collections)]);
 
-  await initializeTestEnvironment();
-  await createNewBlogs();
+  // await initializeTestEnvironment();
+  await initiateCounterModel();
 });
 
 afterAll(async () => {
@@ -57,4 +63,8 @@ describe("Add Comment to a blog", () => {
     user_one_token = `Bearer ${body.data.token}`;
   });
   it("POST /comments", async () => {});
+
+  it("EDIT /comments", async () => {});
+
+  it("DELETE /comments", async () => {});
 });
