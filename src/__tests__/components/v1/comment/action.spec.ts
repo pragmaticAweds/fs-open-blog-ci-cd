@@ -35,7 +35,7 @@ beforeAll(async () => {
 
   await Promise.all([removeCounterModel(), removeDbCollections(collections)]);
 
-  // await initializeTestEnvironment();
+  await initializeTestEnvironment();
   await initiateCounterModel();
 });
 
