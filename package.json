@@ -4,7 +4,7 @@
   "description": "A new edition for blog exercise fs open part 9",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test vitest --no-isolate --config vitest.config.mts",
+    "test": "NODE_ENV=test vitest --config vitest.config.mts",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --transpile-only --exit-child --clear src",
     "build": "tsc -p tsconfig.prod.json",

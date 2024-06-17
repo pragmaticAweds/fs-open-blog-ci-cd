@@ -31,12 +31,21 @@ const collections = [
 ] as unknown as Model<unknown>[];
 
 beforeAll(async () => {
+  console.log("Starting from Comment");
   await connectDb();
 
-  await Promise.all([removeCounterModel(), removeDbCollections(collections)]);
+  console.log("Reemove Counter from Comment");
 
-  await initializeTestEnvironment();
+  await removeCounterModel();
+
+  await removeDbCollections(collections);
+  // await Promise.all([, ]);
+
+  // await initializeTestEnvironment();
+  console.log("Initializing Counter from Comment");
   await initiateCounterModel();
+
+  console.log("Couunter Initialize");
 });
 
 afterAll(async () => {
