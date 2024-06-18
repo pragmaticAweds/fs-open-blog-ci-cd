@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, it } from "vitest";
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import supertest from "supertest";
 
 import {
@@ -24,32 +24,32 @@ import { connectDb } from "../../../../config/persistence";
 const api = supertest(app);
 
 const collections = [
-  BlogModel,
-  CommentModel,
   UserModel,
   UserAccessModel,
+  BlogModel,
+  CommentModel,
 ] as unknown as Model<unknown>[];
 
 beforeAll(async () => {
+  // await connectDb();
   console.log("Starting from Comment");
-  await connectDb();
+
+  await initializeTestEnvironment();
 
   console.log("Reemove Counter from Comment");
 
-  await removeCounterModel();
-
-  await removeDbCollections(collections);
+  // await removeDbCollections(collections);
   // await Promise.all([, ]);
 
-  // await initializeTestEnvironment();
   console.log("Initializing Counter from Comment");
-  await initiateCounterModel();
+  // await initiateCounterModel();
 
   console.log("Couunter Initialize");
 });
 
 afterAll(async () => {
   await removeDbCollections(collections);
+  // await removeCounterModel();
   await cleanupTestEnvironment();
 });
 
@@ -61,6 +61,9 @@ describe("Add Comment to a blog", () => {
   const [creator_one] = newCreatorDetails;
 
   beforeAll(async () => {
+    await UserModel.deleteMany({});
+    await UserAccessModel.deleteMany({});
+
     await createNewUsers();
 
     const { username, password } = creator_one;
@@ -70,6 +73,10 @@ describe("Add Comment to a blog", () => {
       .send({ username, password });
 
     user_one_token = `Bearer ${body.data.token}`;
+  });
+
+  afterAll(async () => {
+    await mongoose.connection.close();
   });
   it("POST /comments", async () => {});
 

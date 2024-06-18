@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model, connection } from "mongoose";
 import { ZodError, z } from "zod";
 import { closeDb, connectDb } from "../config/persistence";
 import {
@@ -39,7 +39,7 @@ const initializeTestEnvironment = async () => {
 
 const cleanupTestEnvironment = async () => {
   await removeCounterModel();
-  await closeDb();
+  // await connection.close();
 };
 
 export {

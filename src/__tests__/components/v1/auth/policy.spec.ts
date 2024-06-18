@@ -1,4 +1,4 @@
-import { describe, it } from "vitest";
+import { describe, it, expect } from "vitest";
 import { validateSchema } from "../../../testHelpers";
 import {
   doSignupSchema,
@@ -27,7 +27,7 @@ describe("Validate Auth Policies", () => {
     },
   };
 
-  it("Validate Schema Fields", ({ expect }) => {
+  it("Validate Schema Fields", () => {
     expect(
       validateSchema(doSignupSchema, signupData.invalidName)
     ).toHaveProperty("message", "Expected string, received number");
@@ -49,7 +49,7 @@ describe("Validate Auth Policies", () => {
     ).toHaveProperty("name", "test user");
   });
 
-  it("Validate Password function", ({ expect }) => {
+  it("Validate Password function", () => {
     expect(validatePassword("1234")).toBe(false);
     expect(validatePassword("Abcd")).toBe(false);
     expect(validatePassword("Abcd.1234")).toBe(true);

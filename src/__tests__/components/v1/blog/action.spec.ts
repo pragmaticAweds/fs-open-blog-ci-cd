@@ -29,7 +29,7 @@ const collections = [
 const clearCollections = () => removeDbCollections(collections);
 
 beforeAll(initializeTestEnvironment);
-afterAll(cleanupTestEnvironment);
+afterAll((async) => {});
 
 describe("GET /blogs", () => {
   beforeAll(async () => createNewBlogs());
