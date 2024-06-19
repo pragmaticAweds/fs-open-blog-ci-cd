@@ -34,13 +34,12 @@ const removeDbCollections = async (collections: Model<unknown>[]) => {
 
 const initializeTestEnvironment = async () => {
   await connectDb();
-  console.log("Initiating Counter");
   await initiateCounterModel();
 };
 
 const cleanupTestEnvironment = async () => {
   await removeCounterModel();
-  await closeDb();
+  // await connection.close();
 };
 
 export {

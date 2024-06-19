@@ -17,7 +17,9 @@ const initiateCounterModel = async (models?: Model<DocCounterAttributes>[]) => {
     (models || counterModels).map(async (Model) => {
       const counterExists = await Model.findOne({}).lean();
 
-      if (!counterExists) return new Model({}).save();
+      if (!counterExists) {
+        await new Model({}).save();
+      }
 
       return;
     })

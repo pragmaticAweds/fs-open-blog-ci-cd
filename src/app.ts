@@ -3,7 +3,8 @@ import helmet from "helmet";
 import componentRouter from "./components/routes";
 import { errorHandlerMiddleware } from "./utils/errorHandler";
 import { connectDb } from "./config/persistence";
-import initiateCounterModel from "./config/initiateCounterModels";
+
+import { initiateCounterModel } from "./config/initiateCounterModels";
 import { appConfig } from "./config";
 
 const app = express();
@@ -26,10 +27,7 @@ const initializeApp = () => {
   }
 };
 
+if (!appConfig.isTesting) initializeDB();
 initializeApp();
-
-if (!appConfig.isTesting) {
-  initializeDB();
-}
 
 export default app;

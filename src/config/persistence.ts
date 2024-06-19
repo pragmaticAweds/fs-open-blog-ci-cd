@@ -8,7 +8,9 @@ const connectDb = async () => {
       color: true,
     });
 
-    await mongoose.connect(appConfig.db_url as string);
+    await mongoose.connect(appConfig.db_url as string, {
+      family: 4,
+    });
 
     console.log("Database connection successful.");
   } catch (err) {

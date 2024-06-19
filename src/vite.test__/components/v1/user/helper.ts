@@ -3,6 +3,7 @@ import UserModel from "../../../../components/user/user.model";
 import { newCreatorDetails } from "../../../testDatas";
 
 const createNewUsers = async (start?: number, end?: number) => {
+  console.log(newCreatorDetails.slice(start, end));
   for (const { is_creator, password, ...userData } of newCreatorDetails.slice(
     start || 0,
     end
