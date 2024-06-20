@@ -4,6 +4,7 @@
   "description": "A new edition for blog exercise fs open part 9",
   "main": "index.js",
   "scripts": {
+    "test:vite": "NODE_ENV=test vitest src/__tests__",
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --transpile-only --exit-child --clear src",
