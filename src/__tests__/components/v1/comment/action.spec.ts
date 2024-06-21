@@ -17,6 +17,7 @@ import {
   removeDbCollections,
   cleanupTestEnvironment,
 } from "../../../testHelpers";
+import { createNewBlogs } from "../blog/helper";
 
 const api = supertest(app);
 
@@ -30,19 +31,19 @@ const collections = [
 describe("Comment Test", () => {
   beforeAll(async () => {
     await connectDb();
-    console.log("Initiating Counter");
     await initiateCounterModel();
   });
 
   describe("Add Comment to a blog", () => {
     let user_one_token = "",
-      existingDocId = "",
-      blog = null;
+      existingCommentId = "",
+      blog;
 
     const [creator_one] = newCreatorDetails;
 
     beforeAll(async () => {
       await createNewUsers(0, 1);
+      await createNewBlogs({ start: 0, end: 1 });
 
       const { username, password } = creator_one;
 
@@ -54,20 +55,60 @@ describe("Comment Test", () => {
     });
 
     afterAll(async () => {
-      await UserModel.deleteMany();
-      await UserAccessModel.deleteMany();
+      await removeDbCollections(collections);
       await resetCounterModel();
     });
 
-    it("POST /comments", async () => {});
+    it("POST /comments", async () => {
+      blog = await BlogModel.findOne();
 
-    it("EDIT /comments", async () => {});
+      expect(blog).toBeTruthy;
+
+      await api
+        .post("/api/comments")
+        .send({
+          blogId: blog?._id,
+          text: "I like this content",
+        })
+        .expect(401);
+
+      const { body } = await api
+        .post("/api/comments")
+        .set("authorization", user_one_token)
+        .send({
+          blogId: blog?._id,
+          text: "I like this content",
+        })
+        .expect(201);
+
+      existingCommentId = body.data._id;
+
+      expect(body.data).toHaveProperty("text", "I like this content");
+      expect(body.data).toHaveProperty("Blog", blog?._id);
+      expect(body.data).toHaveProperty("User", "000001");
+    });
+
+    it("EDIT /comments", async () => {
+      await api
+        .patch(`/api/comments/${existingCommentId}`)
+        .send({
+          text: "I like this content",
+        })
+        .expect(401);
+
+      const { body } = await api
+        .patch(`/api/comments/${existingCommentId}`)
+        .set("authorization", user_one_token)
+        .send({
+          text: "This is the updated content",
+        })
+        .expect(200);
+
+      expect(body.data).toHaveProperty("text", "This is the updated content");
+    });
 
     it("DELETE /comments", async () => {});
   });
 
-  afterAll(async () => {
-    await removeDbCollections(collections);
-    await cleanupTestEnvironment();
-  });
+  afterAll(cleanupTestEnvironment);
 });

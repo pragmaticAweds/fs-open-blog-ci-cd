@@ -40,8 +40,8 @@ commentsRouter.get(
   getComments
 );
 
-commentsRouter.put(
-  "/",
+commentsRouter.patch(
+  "/:commentId",
   policyMiddleware(editCommentSchema),
   verifyToken,
   editComment

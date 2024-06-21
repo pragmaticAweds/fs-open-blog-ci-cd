@@ -1,15 +1,10 @@
-import { Model, connection } from "mongoose";
+import { Model } from "mongoose";
 import { ZodError, z } from "zod";
 import { closeDb, connectDb } from "../config/persistence";
 import {
   initiateCounterModel,
   removeCounterModel,
 } from "../config/initiateCounterModels";
-import CommentModel from "../components/comment/comment.model";
-
-import UserAccessModel from "../components/auth/auth.model";
-import BlogModel from "../components/blog/blog.model";
-import UserModel from "../components/user/user.model";
 
 const validateSchema = <T>(schema: z.Schema<T>, data: unknown) => {
   try {
@@ -29,7 +24,9 @@ const removeDbCollections = async (collections: Model<unknown>[]) => {
     await Promise.all(collections.map(async (Model) => Model.deleteMany()));
 
     console.log("Db cleared");
-  } catch (err) {}
+  } catch (err) {
+    throw new Error(err as string);
+  }
 };
 
 const initializeTestEnvironment = async () => {

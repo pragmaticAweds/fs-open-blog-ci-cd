@@ -13,8 +13,6 @@ const addCommentSchema = z.object({
 });
 
 const editCommentSchema = z.object({
-  blogId: z.string().trim(),
-  commentId: z.string().trim(),
   text: z.string().trim().optional(),
 });
 

@@ -24,8 +24,16 @@ const newBlogs = [
   },
 ];
 
-const createNewBlogs = async (userId?: string) => {
-  for (const blog of newBlogs) {
+const createNewBlogs = async (
+  data: Partial<{
+    userId: string;
+    start: number;
+    end: number;
+  }> = {}
+) => {
+  const { userId, start, end } = data;
+
+  for (const blog of newBlogs.slice(start || 0, end)) {
     await new BlogModel({ ...blog, ...(userId && { User: userId }) }).save();
   }
 };

@@ -122,8 +122,8 @@ describe("Blog Test", () => {
         const blogTracker = await BlogCounterModel.findOne();
         const lastBlogId = blogTracker?.lastId;
 
-        // assert.strictEqual(data.ref, lastBlogId);
-        // assert.isTrue(data._id.endsWith(String(lastBlogId)));
+        expect(data.ref).toBe(lastBlogId);
+        expect(data._id.endsWith(String(lastBlogId))).toBeTruthy;
       });
 
       it("should return 400 for missing required fields when creating blog", async () => {

@@ -76,31 +76,32 @@ const addComment = async (req: IRequest, res: Response) => {
       Blog: blogId,
     }).save();
 
-    return handleResponse(res, {
-      message: "Comment added successfully.",
-      data: { blog: blogExist._id, newComment },
-    });
+    return handleResponse(
+      res,
+      {
+        message: "Comment added successfully.",
+        data: newComment,
+      },
+      201
+    );
   } catch (err) {
     handleErrorResponse(err);
   }
 };
 
 const editComment = async (req: IRequest, res: Response) => {
-  const { body, decoded } = req;
+  const { body, decoded, params } = req;
 
-  const { commentId, blogId, text }: z.infer<typeof editCommentSchema> = body;
+  const { text }: z.infer<typeof editCommentSchema> = body;
 
   try {
-    const commentExists = await CommentModel.findById(commentId);
+    const commentExists = await CommentModel.findById(params.commentId);
 
     if (!commentExists) {
       return handleResponse(res, "Comment does not exists.", 404);
     }
 
-    if (
-      commentExists?.User !== decoded?.ref &&
-      commentExists?.Blog !== blogId
-    ) {
+    if (commentExists?.User !== decoded?.ref) {
       return handleResponse(res, "Forbidden", 403);
     }
 
@@ -110,7 +111,7 @@ const editComment = async (req: IRequest, res: Response) => {
 
     return handleResponse(res, {
       message: "Comment edited successfully.",
-      data: { blog: commentExists.Blog, comment: commentExists },
+      data: commentExists,
     });
   } catch (err) {
     handleErrorResponse(err);
