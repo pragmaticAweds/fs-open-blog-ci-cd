@@ -4,9 +4,9 @@ import { blogIdSchema } from "../blog/blog.policy";
 import { verifyToken } from "../auth/auth.middleware";
 
 import {
-  commentSchema,
   addCommentSchema,
   editCommentSchema,
+  commentIdSchema,
 } from "./comment.policy";
 
 import {
@@ -20,24 +20,22 @@ import {
 const commentsRouter = Router();
 
 commentsRouter.get(
-  "/:commentId/blogs/:blogId",
-  policyMiddleware(commentSchema, "params"),
-  verifyToken,
+  "/blogs/:blogId",
+  policyMiddleware(blogIdSchema, "params"),
+  getComments
+);
+
+commentsRouter.get(
+  "/:commentId",
+  policyMiddleware(commentIdSchema, "params"),
   getSingleComment
 );
 
 commentsRouter.delete(
-  "/:commentId/blogs/:blogId",
-  policyMiddleware(commentSchema, "params"),
+  "/:commentId",
+  policyMiddleware(commentIdSchema, "params"),
   verifyToken,
   deleteComment
-);
-
-commentsRouter.get(
-  "/blogs/:blogId",
-  policyMiddleware(blogIdSchema, "params"),
-  verifyToken,
-  getComments
 );
 
 commentsRouter.patch(

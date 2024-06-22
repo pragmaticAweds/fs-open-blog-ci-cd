@@ -22,29 +22,24 @@ const getComments = async (req: IRequest, res: Response) => {
       "text User"
     ).lean();
 
-    if (!comments.length)
-      return handleResponse(res, { blog: blogExist._id, comments: [] });
+    if (!comments.length) return handleResponse(res, { data: [] });
 
-    return handleResponse(res, { data: { blog: blogExist._id, comments } });
+    return handleResponse(res, { data: comments });
   } catch (err) {
     handleErrorResponse(err);
   }
 };
 
 const getSingleComment = async (req: IRequest, res: Response) => {
-  const { blogId, commentId } = req.params;
+  const { commentId } = req.params;
 
   try {
     const comment = await CommentModel.findById(commentId).lean();
 
     if (!comment) return handleResponse(res, "Comment does not exist", 404);
 
-    if (comment.Blog !== blogId) {
-      return handleResponse(res, "Comment does not exist", 404);
-    }
-
     return handleResponse(res, {
-      data: { blog: blogId, comment },
+      data: comment,
     });
   } catch (err) {
     handleErrorResponse(err);
@@ -120,15 +115,15 @@ const editComment = async (req: IRequest, res: Response) => {
 const deleteComment = async (req: IRequest, res: Response) => {
   const { decoded, params } = req;
 
-  const { commentId, blogId } = params;
+  const { commentId } = params;
 
   try {
     const comment = await CommentModel.findById(commentId).lean();
 
     if (!comment) return handleResponse(res, "Comment does not exist", 404);
 
-    if (comment.User !== decoded?.ref || comment.Blog !== blogId) {
-      return handleResponse(res, "Forbidden", 404);
+    if (comment.User !== decoded?.ref) {
+      return handleResponse(res, "Forbidden", 403);
     }
 
     await CommentModel.deleteOne({ _id: comment._id });

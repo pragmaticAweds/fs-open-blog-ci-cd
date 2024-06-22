@@ -8,16 +8,14 @@ import { createNewUsers } from "../user/helper";
 import app from "../../../../app";
 import UserModel from "../../../../components/user/user.model";
 import UserAccessModel from "../../../../components/auth/auth.model";
-import {
-  initiateCounterModel,
-  resetCounterModel,
-} from "../../../../config/initiateCounterModels";
+import { initiateCounterModel } from "../../../../config/initiateCounterModels";
 import { connectDb } from "../../../../config/persistence";
 import {
   removeDbCollections,
   cleanupTestEnvironment,
 } from "../../../testHelpers";
 import { createNewBlogs } from "../blog/helper";
+import { BlogAttributes } from "../../../../components/blog/blog.types";
 
 const api = supertest(app);
 
@@ -29,40 +27,38 @@ const collections = [
 ] as unknown as Model<unknown>[];
 
 describe("Comment Test", () => {
+  let user_one_token = "",
+    user_two_token = "",
+    existingCommentId = "",
+    blog: BlogAttributes;
+
   beforeAll(async () => {
     await connectDb();
     await initiateCounterModel();
+
+    const [creator_one, creator_two] = newCreatorDetails;
+
+    await createNewUsers();
+    await createNewBlogs({ start: 0, end: 1 });
+
+    const { username, password } = creator_one;
+    const { username: username_two, password: password_two } = creator_two;
+
+    const { body } = await api
+      .post("/api/auth/login")
+      .send({ username, password });
+
+    const { body: res } = await api
+      .post("/api/auth/login")
+      .send({ username: username_two, password: password_two });
+
+    user_one_token = `Bearer ${body.data.token}`;
+    user_two_token = `Bearer ${res.data.token}`;
   });
 
-  describe("Add Comment to a blog", () => {
-    let user_one_token = "",
-      existingCommentId = "",
-      blog;
-
-    const [creator_one] = newCreatorDetails;
-
-    beforeAll(async () => {
-      await createNewUsers(0, 1);
-      await createNewBlogs({ start: 0, end: 1 });
-
-      const { username, password } = creator_one;
-
-      const { body } = await api
-        .post("/api/auth/login")
-        .send({ username, password });
-
-      user_one_token = `Bearer ${body.data.token}`;
-    });
-
-    afterAll(async () => {
-      await removeDbCollections(collections);
-      await resetCounterModel();
-    });
-
-    it("POST /comments", async () => {
-      blog = await BlogModel.findOne();
-
-      expect(blog).toBeTruthy;
+  describe("POST /comments", () => {
+    it("Should return 401 for unauthenticated user", async () => {
+      blog = (await BlogModel.findOne()) as BlogAttributes;
 
       await api
         .post("/api/comments")
@@ -71,7 +67,9 @@ describe("Comment Test", () => {
           text: "I like this content",
         })
         .expect(401);
+    });
 
+    it("Should return 201 successful for authenticated user.", async () => {
       const { body } = await api
         .post("/api/comments")
         .set("authorization", user_one_token)
@@ -87,15 +85,28 @@ describe("Comment Test", () => {
       expect(body.data).toHaveProperty("Blog", blog?._id);
       expect(body.data).toHaveProperty("User", "000001");
     });
+  });
 
-    it("EDIT /comments", async () => {
+  describe("EDIT /comments", () => {
+    it("Should return 401 for unauthenticated user", async () => {
       await api
         .patch(`/api/comments/${existingCommentId}`)
         .send({
           text: "I like this content",
         })
         .expect(401);
+    });
+    it("Should return 403 for wrong user", async () => {
+      await api
+        .patch(`/api/comments/${existingCommentId}`)
+        .set("authorization", user_two_token)
+        .send({
+          text: "This is the updated content",
+        })
+        .expect(403);
+    });
 
+    it("Should return 200 for changing comment", async () => {
       const { body } = await api
         .patch(`/api/comments/${existingCommentId}`)
         .set("authorization", user_one_token)
@@ -106,9 +117,48 @@ describe("Comment Test", () => {
 
       expect(body.data).toHaveProperty("text", "This is the updated content");
     });
-
-    it("DELETE /comments", async () => {});
   });
 
-  afterAll(cleanupTestEnvironment);
+  describe("GET /comments", () => {
+    it("Should return all comments of a blog", async () => {
+      const { body } = await api
+        .get(`/api/comments/blogs/${blog?._id}`)
+        .expect(200);
+
+      expect(body.data.length).toBe(1);
+    });
+
+    it("Should return a single blog", async () => {
+      const { body } = await api
+        .get(`/api/comments/${existingCommentId}`)
+        .expect(200);
+
+      expect(body.data.text).toBeTruthy();
+      expect(body.data.Blog).toEqual(blog._id);
+    });
+  });
+
+  describe("DELETE /comments", () => {
+    it("Should return 401 for unauthenticated user", async () => {
+      await api.delete(`/api/comments/${existingCommentId}`).expect(401);
+    });
+    it("Should return 403 for wrong user", async () => {
+      await api
+        .delete(`/api/comments/${existingCommentId}`)
+        .set("authorization", user_two_token)
+        .expect(403);
+    });
+
+    it("Should return 204 for changing comment", async () => {
+      await api
+        .delete(`/api/comments/${existingCommentId}`)
+        .set("authorization", user_one_token)
+        .expect(204);
+    });
+  });
+
+  afterAll(async () => {
+    await removeDbCollections(collections);
+    await cleanupTestEnvironment();
+  });
 });
