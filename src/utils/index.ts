@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 
 import { ClientSession, Document, Model } from "mongoose";
@@ -8,7 +9,7 @@ import { Schema } from "zod";
 
 import { CustomIdAttributes, DocCounterAttributes, IRequest } from "../types";
 
-import { ResponseError, handleErrorResponse } from "./errorHandler";
+import { handleErrorResponse } from "./errorHandler";
 
 import { appConfig } from "../config";
 import UserModel from "../components/user/user.model";

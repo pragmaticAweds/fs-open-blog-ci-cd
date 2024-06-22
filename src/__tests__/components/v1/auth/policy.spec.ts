@@ -1,8 +1,5 @@
 import { validateSchema } from "../../../testHelpers";
-import {
-  doSignupSchema,
-  doLoginSchema,
-} from "../../../../components/auth/auth.policy";
+import { doSignupSchema } from "../../../../components/auth/auth.policy";
 import { validatePassword } from "../../../../utils/validators";
 
 describe("Validate Auth Policies", () => {
@@ -51,6 +48,7 @@ describe("Validate Auth Policies", () => {
   it("Validate Password function", () => {
     expect(validatePassword("1234")).toBe(false);
     expect(validatePassword("Abcd")).toBe(false);
+    expect(validatePassword("abcd.123")).toBe(false);
     expect(validatePassword("Abcd.1234")).toBe(true);
   });
 });
