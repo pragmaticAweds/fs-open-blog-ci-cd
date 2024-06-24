@@ -1,10 +1,9 @@
 {
-  "name": "fs-open-new-blog",
+  "name": "fs-open-blog-server",
   "version": "1.0.0",
-  "description": "A new edition for blog exercise fs open part 9",
+  "description": "A new edition for blog exercise server fs open part 9",
   "main": "index.js",
   "scripts": {
-    "test:vite": "NODE_ENV=test vitest src/__tests__",
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --transpile-only --exit-child --clear src",
@@ -35,7 +34,6 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.11.0",
-    "vitest": "^1.6.0",
     "zod": "^3.23.8"
   },
   "dependencies": {

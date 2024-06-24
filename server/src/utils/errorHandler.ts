@@ -3,7 +3,7 @@ import { ResponseErrorAttributes } from "../types";
 
 class ResponseError extends Error {
   status: number;
-  extra: Record<string, any>;
+  extra: Record<string, never>;
 
   constructor({ message, name, status, extra }: ResponseErrorAttributes) {
     super();
@@ -20,7 +20,8 @@ class ResponseError extends Error {
 }
 
 const handleErrorResponse = (err: unknown, statusCode?: number) => {
-  let { message, extra, status, name } = err as ResponseError;
+  let { message, status } = err as ResponseError;
+  const { extra, name } = err as ResponseError;
   switch (true) {
     case name === "CastError":
       message = "Malformatted id";
@@ -56,7 +57,8 @@ const errorHandlerMiddleware = (
   error: ResponseError,
   _req: Request,
   res: Response,
-  next: NextFunction
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next: NextFunction
 ) => {
   const { status, message, extra } = error;
 

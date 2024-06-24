@@ -41,7 +41,7 @@ userAccessSchema.pre("save", async function (next) {
 
     next();
   } catch (err) {
-    throw err;
+    throw new Error(err as string);
   }
 });
 

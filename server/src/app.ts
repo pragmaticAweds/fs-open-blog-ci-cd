@@ -23,7 +23,7 @@ const initializeApp = () => {
 
     app.use(errorHandlerMiddleware);
   } catch (err) {
-    throw err;
+    throw new Error(err as string);
   }
 };
 

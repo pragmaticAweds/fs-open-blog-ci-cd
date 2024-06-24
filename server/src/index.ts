@@ -18,6 +18,7 @@ server.on("listening", () => {
   console.log(`Server running on port ${activePort}`);
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 server.on("error", (error: any) => {
   const port = activePort;
   if (error.syscall !== "listen") throw error;
@@ -29,16 +30,17 @@ server.on("error", (error: any) => {
       console.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
-    case "EADDRINUSE":
+    case "EADDRINUSE": {
       // generate a random port and use it
       const randomPort = +Math.random().toString().slice(2, 6);
+
       app.set("port", randomPort);
 
       console.log(`Port ${port} is already in use, trying ${randomPort}`);
 
       server.listen(randomPort);
-      // console.error(`${bind} is already in use`);
       break;
+    }
     default:
       throw error;
   }

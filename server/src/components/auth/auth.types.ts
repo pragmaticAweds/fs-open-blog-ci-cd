@@ -6,8 +6,8 @@ interface UserAccessAttribute
     CustomIdAttributes {
   User: string;
   password: string;
-  comparePassword(password: string): boolean;
-  updatePassword(password: string): void;
+  comparePassword(_password: string): boolean;
+  updatePassword(_password: string): void;
 }
 
 export default UserAccessAttribute;
