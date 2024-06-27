@@ -1,5 +1,3 @@
-"use client";
-
 import { FormEvent } from "react";
 
 import Input from "../atoms/Input";
@@ -7,6 +5,7 @@ import Button from "../atoms/Button";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { doLogin } from "../../lib/actions/login";
 
 const LoginForm = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -20,16 +19,26 @@ const LoginForm = () => {
     const password = formData.get("password") as string;
 
     try {
-      // if (isAuthenticated) {
-      //   // toast(message, { type: "success" });
-      //   //clear each input field
-      //   // router.push("/profile");
-      //   ["username", "password"].forEach(
-      //     (field) => (currentTarget[field]["value"] = "")
-      //   );
-      //   return;
-      // }
-      // toast(message, { type: "error" });
+      const { isAuthenticated, message } = await doLogin({
+        username,
+        password,
+      });
+
+      if (isAuthenticated) {
+        toast(message, { type: "success" });
+
+        //clear each input field
+
+        // router.push("/profile");
+
+        ["username", "password"].forEach(
+          (field) => (currentTarget[field]["value"] = "")
+        );
+
+        return;
+      }
+
+      toast(message, { type: "error" });
     } catch (err) {
       console.log(err);
     }

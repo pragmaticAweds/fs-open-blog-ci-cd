@@ -2,22 +2,22 @@ import LoginForm from "../../components/molecules/LoginForm";
 
 const LoginPage = () => {
   return (
-    <div className="grid grid-cols-2 h-screen">
-      <div className="flex flex-col justify-center w-full gap-y-6 max-w-[70%] mx-auto">
-        <div>
+    <div className="w-full h-dvh flex items-start">
+      <div className="flex flex-col justify-center gap-y-6 h-full w-1/2 max max-w-[35%] mx-auto">
+        <>
           <h1 className="text-4xl">Welcome!</h1>
           <p className="text-gray-500 font-light mt-2">
             Please enter your Login details to sign in.
           </p>
-        </div>
+        </>
 
         <LoginForm />
       </div>
-      <div className="relative">
+      <div className="relative w-1/2 h-full flex flex-col">
         <img
           src="/login-bg.jpg"
           alt="login-bg"
-          className="object-cover"
+          className="object-cover w-full h-full"
           sizes="(max-width: 768px) 100vw, 33vw"
         />
       </div>
