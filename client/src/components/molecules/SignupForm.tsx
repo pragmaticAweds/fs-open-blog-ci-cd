@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { doLogin } from "../../lib/actions/login";
 
-const LoginForm = () => {
+const SignupForm = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -47,8 +47,9 @@ const LoginForm = () => {
       <ToastContainer position="top-right" autoClose={700} />
 
       <form className="flex flex-col w-full gap-y-12" onSubmit={handleSubmit}>
+        <Input label="Name" isRequired name="name" />
         <Input label="Username" isRequired name="username" />
-
+        <Input label="Creator" isRequired name="is_creator" type="radio" />
         <Input label="Password" type="password" isRequired name="password" />
 
         <Button label="Login" />
@@ -57,4 +58,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default SignupForm;
