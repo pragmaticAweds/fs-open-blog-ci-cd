@@ -1,3 +1,4 @@
+import { fetchFromApi } from "@/services";
 import { loginFormSchema } from "./policy";
 import { z } from "zod";
 
@@ -11,22 +12,25 @@ export const doLogin = async (data: z.infer<typeof loginFormSchema>) => {
     };
 
   try {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(validatedFields.data),
+    const { status, message, data } = await fetchFromApi({
+      url: "auth/login",
+      method: "post",
+      data: validatedFields.data,
     });
 
-    const { message, token } = await res.json();
+    if (!status) {
+      return {
+        isAuthenticated: false,
+        message: message,
+      };
+    }
 
-    localStorage.setItem("token", token);
-
-    // cookies().set("session", token, { expires: Date.now() - 60 * 1000 });
+    window?.localStorage.setItem("loggedInUser", JSON.stringify(data));
 
     return {
-      isAuthenticated: res.ok,
+      isAuthenticated: status,
       message,
-      token,
+      token: data.token,
     };
   } catch (err) {
     return {

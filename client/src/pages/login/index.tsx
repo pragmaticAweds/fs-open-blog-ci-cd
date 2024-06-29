@@ -1,5 +1,4 @@
 import LoginForm from "../../components/molecules/LoginForm";
-import SignupForm from "../../components/molecules/SignupForm";
 
 const LoginPage = () => {
   return (
@@ -20,8 +19,7 @@ const LoginPage = () => {
           </p>
         </>
 
-        {/* <LoginForm /> */}
-        <SignupForm />
+        <LoginForm />
       </div>
     </div>
   );

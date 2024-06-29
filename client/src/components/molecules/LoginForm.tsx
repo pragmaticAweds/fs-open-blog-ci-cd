@@ -1,10 +1,9 @@
 import { FormEvent } from "react";
+import { toast } from "react-toastify";
 
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { doLogin } from "../../lib/actions/login";
 
 const LoginForm = () => {
@@ -41,11 +40,12 @@ const LoginForm = () => {
       console.log(err);
     }
   };
+  // const localStorag = window?.localStorage.getItem("token");
+
+  // console.log({ localStorag });
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={700} />
-
       <form className="flex flex-col w-full gap-y-12" onSubmit={handleSubmit}>
         <Input label="Username" isRequired name="username" />
 
