@@ -4,9 +4,12 @@ import { toast } from "react-toastify";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 
-import { doLogin } from "../../lib/actions/login";
+import { doLogin } from "../../lib/actions/auth";
+import useAuthStore from "@/entities/auth-entity";
 
 const LoginForm = () => {
+  const setAuth = useAuthStore((state) => state.setAuth);
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -18,13 +21,15 @@ const LoginForm = () => {
     const password = formData.get("password") as string;
 
     try {
-      const { isAuthenticated, message } = await doLogin({
+      const { isAuthenticated, message, data } = await doLogin({
         username,
         password,
       });
 
       if (isAuthenticated) {
         toast(message, { type: "success" });
+
+        setAuth({ ...data, isLoggedIn: true });
 
         //clear each input field
 
@@ -40,9 +45,6 @@ const LoginForm = () => {
       console.log(err);
     }
   };
-  // const localStorag = window?.localStorage.getItem("token");
-
-  // console.log({ localStorag });
 
   return (
     <>

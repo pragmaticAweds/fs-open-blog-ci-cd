@@ -1,20 +1,27 @@
-import { StateCreator } from "zustand";
+import { create } from "zustand";
 
-import { BlogEntityAttribute } from "@/lib/types";
+import { BlogAttribute, BlogEntityAttribute } from "@/lib/types";
+import { fetchFromApi } from "@/services";
 
-export const createBlogEntity: StateCreator<
-  BlogEntityAttribute,
-  [["zustand/immer", never]],
-  [],
-  BlogEntityAttribute
-> = (set) => ({
+const useBlogStore = create<Pick<BlogEntityAttribute, "blogs">>(() => ({
   blogs: [],
-  addBlog: (blog) =>
-    set((state) => {
-      state.blogs.push(blog);
-    }),
-  setBlog: (blogs) =>
-    set((state) => {
-      state.blogs = blogs;
-    }),
-});
+}));
+
+const addBlog = (blog: BlogAttribute) =>
+  useBlogStore.setState((state) => ({
+    ...state,
+    blogs: [...state.blogs, blog],
+  }));
+
+const fetchBlogs = async () => {
+  const { data } = await fetchFromApi({ url: "blogs" });
+
+  return useBlogStore.setState((state) => ({
+    ...state,
+    blogs: data,
+  }));
+};
+
+export { addBlog, fetchBlogs };
+
+export default useBlogStore;

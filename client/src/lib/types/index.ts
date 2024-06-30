@@ -31,11 +31,12 @@ type BlogEntityAttribute = {
   setBlog: (blogs: BlogAttribute[]) => void;
 };
 
-type AuthAttribute = {
+interface AuthAttribute {
   token: string | null;
   isLoggedIn: boolean;
   username: string;
-};
+  setAuth: (authData: AuthAttribute) => void;
+}
 
 export type {
   methodTypes,

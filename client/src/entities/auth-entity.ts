@@ -1,28 +1,27 @@
-import { StateCreator } from "zustand";
+import { create } from "zustand";
+
+import { persist, createJSONStorage } from "zustand/middleware";
 
 import { AuthAttribute } from "@/lib/types";
 
-type AuthActionAttributes = {
-  setAuth: (authData: AuthAttribute) => void;
+const initialEntity = {
+  isLoggedIn: false,
+  token: null,
+  username: "",
 };
 
-export type AuthEntityAttribute = AuthAttribute & AuthActionAttributes;
-
-export const createAuthEntity: StateCreator<
-  AuthEntityAttribute,
-  [["zustand/immer", never]],
-  [],
-  AuthEntityAttribute
-> = (set) => ({
-  token: null,
-  isLoggedIn: false,
-  username: "",
-  setAuth: (authData) =>
-    set((state) => {
-      const { isLoggedIn, token, username } = authData;
-
-      state.isLoggedIn = isLoggedIn;
-      state.token = token;
-      state.username = username;
+const useAuthStore = create<AuthAttribute>()(
+  persist(
+    (set) => ({
+      ...initialEntity,
+      setAuth: (data) =>
+        set((state) => ({
+          ...state,
+          ...data,
+        })),
     }),
-});
+    { name: "authStorage", storage: createJSONStorage(() => sessionStorage) }
+  )
+);
+
+export default useAuthStore;

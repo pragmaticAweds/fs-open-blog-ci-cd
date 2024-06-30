@@ -1,9 +1,9 @@
 import { fetchFromApi } from "@/services";
-import { loginFormSchema } from "./policy";
+import { addNewBlogSchema } from "./policy";
 import { z } from "zod";
 
-export const doLogin = async (data: z.infer<typeof loginFormSchema>) => {
-  const validatedFields = loginFormSchema.safeParse(data);
+export const addNewBlog = async (data: z.infer<typeof addNewBlogSchema>) => {
+  const validatedFields = addNewBlogSchema.safeParse(data);
 
   if (!validatedFields.success)
     return {
@@ -13,28 +13,21 @@ export const doLogin = async (data: z.infer<typeof loginFormSchema>) => {
 
   try {
     const { status, message, data } = await fetchFromApi({
-      url: "auth/login",
+      url: "blogs",
       method: "post",
       data: validatedFields.data,
     });
 
-    if (!status) {
-      return {
-        isAuthenticated: false,
-        message: message,
-      };
-    }
-
-    window?.localStorage.setItem("loggedInUser", JSON.stringify(data));
+    if (!status) return { message, status };
 
     return {
-      isAuthenticated: status,
+      data,
       message,
-      token: data.token,
+      status,
     };
   } catch (err) {
     return {
-      isAuthenticated: false,
+      status: false,
       message: (err as { message: string }).message,
     };
   }
