@@ -15,15 +15,14 @@ const App = () => {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      fetchBlogs();
-    }
-  }, [isLoggedIn]);
+    fetchBlogs();
+  }, []);
 
   return (
     <div>
       <ToastContainer position="top-right" autoClose={1500} />
-      <Navbar />
+
+      {isLoggedIn && <Navbar />}
       <Suspense fallback={<div>Loading...</div>}>
         {isLoggedIn ? <LazyBlogs /> : <LoginPage />}
       </Suspense>

@@ -12,18 +12,19 @@ const Blogs = () => {
   const { blogs } = useBlogStore();
 
   return (
-    <main className="flex justify-around">
+    <main className="grid grid-cols-4 p-4 gap-16">
       {blogs.map((blog) => (
-        <Card key={blog._id}>
+        <Card key={blog._id} className="w-full">
           <CardHeader>
-            <CardTitle>Card Title</CardTitle>
-            <CardDescription>Card Description</CardDescription>
+            <CardTitle>{blog.title}</CardTitle>
           </CardHeader>
+
           <CardContent>
-            <p>Card Content</p>
+            <a href={blog.url}>{blog.url}</a>
           </CardContent>
+
           <CardFooter>
-            <p>Card Footer</p>
+            <p>{blog._id}</p>
           </CardFooter>
         </Card>
       ))}

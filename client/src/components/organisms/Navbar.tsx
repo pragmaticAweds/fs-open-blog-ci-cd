@@ -3,6 +3,8 @@ import Button from "../atoms/Button";
 
 const Navbar = () => {
   const username = useAuthStore().username;
+  const isLoggedIn = useAuthStore().isLoggedIn;
+
   return (
     <nav className="bg-slate-600 p-4 text-white flex justify-between">
       <h1 className="text-2xl font-semibold">Blog</h1>
@@ -13,7 +15,7 @@ const Navbar = () => {
             username.slice(username.length - 1, username.length)
           ).toUpperCase()}
         </span>
-        <Button label="Log In" className="px-4" />
+        <Button label={isLoggedIn ? "Log Out" : "Log In"} className="px-4" />
       </div>
     </nav>
   );
