@@ -36,6 +36,7 @@ interface AuthAttribute {
   isLoggedIn: boolean;
   username: string;
   setAuth: (authData: AuthAttribute) => void;
+  logOut: () => void;
 }
 
 export type {

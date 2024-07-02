@@ -2,7 +2,6 @@ import useBlogStore from "@/entities/blog-entity";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,

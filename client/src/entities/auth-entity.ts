@@ -19,6 +19,14 @@ const useAuthStore = create<AuthAttribute>()(
           ...state,
           ...data,
         })),
+      logOut: () => {
+        set((state) => ({
+          ...state,
+          ...initialEntity,
+        }));
+
+        window.sessionStorage.clear();
+      },
     }),
     { name: "authStorage", storage: createJSONStorage(() => sessionStorage) }
   )

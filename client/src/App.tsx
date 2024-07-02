@@ -15,8 +15,8 @@ const App = () => {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
   useEffect(() => {
-    fetchBlogs();
-  }, []);
+    if (isLoggedIn) fetchBlogs();
+  }, [isLoggedIn]);
 
   return (
     <div>
