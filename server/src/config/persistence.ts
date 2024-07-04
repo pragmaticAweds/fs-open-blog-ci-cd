@@ -10,6 +10,7 @@ const connectDb = async () => {
 
     await mongoose.connect(appConfig.db_url as string, {
       family: 4,
+      serverSelectionTimeoutMS: 60000,
     });
 
     console.log("Database connection successful.");
