@@ -1,7 +1,7 @@
 import useAuthStore from "@/entities/auth-entity";
 import Button from "../atoms/Button";
 
-const Navbar = () => {
+const Navbar = ({ openModal }: { openModal: () => void }) => {
   const { username, logOut } = useAuthStore((state) => state);
 
   return (
@@ -15,7 +15,11 @@ const Navbar = () => {
             username.slice(username.length - 1, username.length)
           ).toUpperCase()}
         </span>{" "}
-        <Button label={"Add a new blog"} className="px-4 whitespace-nowrap" />
+        <Button
+          label={"Add a new blog"}
+          className="px-4 whitespace-nowrap"
+          onClick={openModal}
+        />
         <Button label="Log Out" className="px-4" onClick={logOut} />
       </div>
     </nav>

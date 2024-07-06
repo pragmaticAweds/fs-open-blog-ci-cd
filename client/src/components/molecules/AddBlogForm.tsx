@@ -3,12 +3,12 @@ import { FormEvent } from "react";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { addNewBlog } from "@/lib/actions/blog";
 import { addBlog } from "@/entities/blog-entity";
 
-const AddBlogForm = () => {
+const AddBlogForm = ({ closeModal }: { closeModal: () => void }) => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -36,6 +36,8 @@ const AddBlogForm = () => {
 
         fieldNames.forEach((field) => (currentTarget[field]["value"] = ""));
 
+        closeModal();
+
         return;
       }
 
@@ -47,9 +49,11 @@ const AddBlogForm = () => {
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={700} />
-
-      <form className="flex flex-col w-full gap-y-12" onSubmit={handleSubmit}>
+      <form
+        className="flex flex-col w-full gap-y-12 bg-white p-8"
+        onSubmit={handleSubmit}
+      >
+        <h1 className="text-2xl text-center font-medium">Add New Blog</h1>
         <Input label="Author" isRequired name="author" />
         <Input label="Title" isRequired name="title" />
         <Input label="Url" isRequired name="url" />

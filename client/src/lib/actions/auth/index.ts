@@ -14,7 +14,7 @@ export const doLogin = async (data: z.infer<typeof loginFormSchema>) => {
   try {
     const { status, message, data } = await fetchFromApi({
       url: "auth/login",
-      method: "post",
+      method: "POST",
       data: validatedFields.data,
     });
 

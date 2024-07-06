@@ -40,9 +40,13 @@ const Input = ({
         )}
       >
         <input
-          className="flex-1 bg-transparent text-twikkl-main font-light placeholder:font-light placeholder:text-[0.9375rem]"
+          className="flex-1 bg-transparent font-light placeholder:font-light placeholder:text-[0.9375rem] focus:outline-none"
           type={
-            type === "password" && showPassword ? "password" : type || "text"
+            type === "password" && showPassword
+              ? type
+              : !showPassword
+              ? "text"
+              : type
           }
           name={name}
           onFocus={handleFocus}

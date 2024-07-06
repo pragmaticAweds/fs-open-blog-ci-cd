@@ -13,6 +13,14 @@ const addBlog = (blog: BlogAttribute) =>
     blogs: [...state.blogs, blog],
   }));
 
+const updateBlog = (updatedBlog: BlogAttribute) =>
+  useBlogStore.setState((state) => ({
+    ...state,
+    blogs: state.blogs.map((blog) =>
+      blog._id === updatedBlog._id ? updatedBlog : blog
+    ),
+  }));
+
 const fetchBlogs = async () => {
   const { data } = await fetchFromApi({ url: "blogs" });
 
@@ -22,6 +30,6 @@ const fetchBlogs = async () => {
   }));
 };
 
-export { addBlog, fetchBlogs };
+export { addBlog, fetchBlogs, updateBlog };
 
 export default useBlogStore;

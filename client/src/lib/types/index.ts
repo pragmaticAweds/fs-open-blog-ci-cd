@@ -1,4 +1,4 @@
-type methodTypes = "get" | "post" | "put" | "patch" | "delete";
+type methodTypes = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 type responseType =
   | "arraybuffer"
@@ -28,6 +28,7 @@ type BlogAttribute = {
 type BlogEntityAttribute = {
   blogs: BlogAttribute[];
   addBlog: (blog: BlogAttribute) => void;
+  updateBlog: (blog: BlogAttribute) => void;
   setBlog: (blogs: BlogAttribute[]) => void;
 };
 

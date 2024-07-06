@@ -4,7 +4,7 @@ import { fetchApiAttributes } from "@/lib/types";
 
 const fetchFromApi = async ({
   url,
-  method = "get",
+  method = "GET",
   data,
   reqConfig,
 }: fetchApiAttributes) => {
