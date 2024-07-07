@@ -30,13 +30,15 @@ const corsOption = {
       );
     }
   },
+  methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
 
 const initializeApp = () => {
   try {
-    app.use(cors(corsOption));
     app.use(helmet());
+    app.use(cors(corsOption));
     app.use(express.json());
 
     app.use("/api", componentRouter);

@@ -8,7 +8,7 @@ class ResponseError extends Error {
   constructor({ message, name, status, extra }: ResponseErrorAttributes) {
     super();
 
-    Error.captureStackTrace(this, this.constructor);
+    Object.setPrototypeOf(this, new.target.prototype);
 
     this.name = name || this.constructor.name;
 
@@ -16,6 +16,8 @@ class ResponseError extends Error {
     this.status = status || 500;
 
     this.extra = extra || {};
+
+    Error.captureStackTrace(this);
   }
 }
 
@@ -69,5 +71,14 @@ const errorHandlerMiddleware = (
     },
   });
 };
+
+// class ErrorHandler {
+//   public async handleError(
+//     err: Error,
+//     responseStream: Response
+//   ): Promise<void> {}
+// }
+
+// export const handler = new ErrorHandler();
 
 export { handleErrorResponse, errorHandlerMiddleware, ResponseError };

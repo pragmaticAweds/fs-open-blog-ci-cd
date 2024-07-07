@@ -3,6 +3,7 @@ import { createServer } from "http";
 import app from "./app";
 
 import { appConfig } from "./config";
+import { closeDb } from "./config/persistence";
 
 const { port } = appConfig;
 
@@ -45,3 +46,29 @@ server.on("error", (error: any) => {
       throw error;
   }
 });
+
+const gracefulShutdown = () => {
+  console.log("Received kill signal, shutting down gracefully.");
+
+  server.close(async () => {
+    console.log("Closed out remaining connections.");
+
+    try {
+      await closeDb();
+      console.log("Closed database connections.");
+    } catch (err) {
+      console.log("Error closing connections", err);
+    } finally {
+      process.exit();
+    }
+  });
+};
+
+// process.on("uncaughtException", (err: Error) => {
+//   handler.handleError(err);
+
+//   if (!handler.isTrustedError(err)) process.exit(1);
+// });
+
+process.on("SIGINT", gracefulShutdown);
+process.on("SIGTERM", gracefulShutdown);
