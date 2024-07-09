@@ -15,6 +15,9 @@ test("renders content", ({ expect }) => {
 
   render(<BlogCard blog={blog} />);
 
-  const element = screen.getByText("How to write test");
+  const element = screen.getByText(blog.title);
+
+  screen.debug(element);
+
   expect(element).toBeDefined();
 });

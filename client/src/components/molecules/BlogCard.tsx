@@ -38,7 +38,7 @@ const BlogCard = ({ blog }: { blog: BlogAttribute }) => {
   };
 
   return (
-    <Card key={blog._id} className="">
+    <Card key={blog._id} className="blog">
       <CardHeader>
         <CardTitle>{blog.title}</CardTitle>
       </CardHeader>
