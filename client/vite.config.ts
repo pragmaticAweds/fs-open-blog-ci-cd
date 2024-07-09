@@ -11,7 +11,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: ["/src/__tests__/index.test.tsx"],
+    // setupFiles: ["/src/__tests__"],
   },
   resolve: {
     alias: {

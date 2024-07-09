@@ -38,7 +38,7 @@ const BlogCard = ({ blog }: { blog: BlogAttribute }) => {
   };
 
   return (
-    <Card key={blog._id} className="blog">
+    <Card key={blog._id} data-testid="blog">
       <CardHeader>
         <CardTitle>{blog.title}</CardTitle>
       </CardHeader>
@@ -47,25 +47,31 @@ const BlogCard = ({ blog }: { blog: BlogAttribute }) => {
         <span className="font-medium text-lg">By: {blog.author}</span>
 
         {isOpen ? (
-          <div className="flex items-center">
-            <span className="flex-1 font-medium">
-              Likes: {blog.likes.length}
-            </span>{" "}
-            <span
-              className="border py-1 px-4 cursor-pointer border-gray-400"
-              onClick={handleBlogLike}
-            >
-              Like
-            </span>
-          </div>
+          <>
+            <div className="flex items-center">
+              <span className="flex-1 font-medium">
+                Likes: {blog.likes.length}
+              </span>{" "}
+              <span
+                className="border py-1 px-4 cursor-pointer border-gray-400"
+                data-testid="blog-likes"
+                onClick={handleBlogLike}
+              >
+                Like
+              </span>
+            </div>
+            <div>
+              Read:{" "}
+              <a href={blog.url} className="">
+                {blog.url}
+              </a>
+            </div>
+          </>
         ) : null}
       </CardContent>
 
-      <CardFooter className="grid grid-cols-2 gap-x-2">
+      <CardFooter>
         <Button label={isOpen ? "Hide" : "View"} onClick={handleBlogReading} />
-        <a href={blog.url} className="text-center border border-black py-3">
-          Read
-        </a>
       </CardFooter>
     </Card>
   );

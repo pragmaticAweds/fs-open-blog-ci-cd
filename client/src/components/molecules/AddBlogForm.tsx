@@ -34,7 +34,13 @@ const AddBlogForm = ({ closeModal }: { closeModal: () => void }) => {
 
         addBlog(data);
 
-        fieldNames.forEach((field) => (currentTarget[field]["value"] = ""));
+        // Reset form fields
+        fieldNames.forEach((field) => {
+          const input = currentTarget.elements.namedItem(
+            field
+          ) as HTMLInputElement;
+          if (input) input.value = "";
+        });
 
         closeModal();
 
@@ -52,6 +58,7 @@ const AddBlogForm = ({ closeModal }: { closeModal: () => void }) => {
       <form
         className="flex flex-col w-full gap-y-12 bg-white p-8"
         onSubmit={handleSubmit}
+        data-testid="blog-form"
       >
         <h1 className="text-2xl text-center font-medium">Add New Blog</h1>
         <Input label="Author" isRequired name="author" />
