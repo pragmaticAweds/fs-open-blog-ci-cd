@@ -36,8 +36,7 @@ const addNewBlog = async (data: z.infer<typeof addNewBlogSchema>) => {
 const likeBlog = async (blogId: string) => {
   if (!blogId)
     return {
-      errors: "blog Id required",
-      message: "Invalid input fields.",
+      message: "blog Id required",
     };
 
   try {
@@ -61,4 +60,31 @@ const likeBlog = async (blogId: string) => {
   }
 };
 
-export { addNewBlog, likeBlog };
+const deleteBlog = async (blogId: string) => {
+  if (!blogId)
+    return {
+      message: "blog Id required",
+    };
+
+  try {
+    const { status, message, data } = await fetchFromApi({
+      url: `blogs/${blogId}`,
+      method: "DELETE",
+    });
+
+    if (!status) return { message, status };
+
+    return {
+      data,
+      message,
+      status,
+    };
+  } catch (err) {
+    return {
+      status: false,
+      message: (err as { message: string }).message,
+    };
+  }
+};
+
+export { addNewBlog, likeBlog, deleteBlog };

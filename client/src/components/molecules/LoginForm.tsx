@@ -49,9 +49,20 @@ const LoginForm = () => {
   return (
     <>
       <form className="flex flex-col w-full gap-y-12" onSubmit={handleSubmit}>
-        <Input label="Username" isRequired name="username" />
+        <Input
+          label="Username"
+          isRequired
+          name="username"
+          data-testid="username"
+        />
 
-        <Input label="Password" type="password" isRequired name="password" />
+        <Input
+          label="Password"
+          type="password"
+          isRequired
+          name="password"
+          data-testid="password"
+        />
 
         <Button label="Login" />
       </form>

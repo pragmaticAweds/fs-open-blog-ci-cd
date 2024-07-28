@@ -11,7 +11,7 @@ const Button = ({
   return (
     <button
       className={cn(
-        "py-4 md:py-3 flex flex-1 justify-center items-center font-medium text-white transition-all duration-200 w-full",
+        "py-3 md:py-2 flex flex-1 justify-center items-center font-medium text-white transition-all duration-200 w-full",
         maxWidth,
         disable ? "bg-gray-400" : "bg-gray-950 hover:bg-gray-800",
         className

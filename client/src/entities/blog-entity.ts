@@ -21,6 +21,12 @@ const updateBlog = (updatedBlog: BlogAttribute) =>
     ),
   }));
 
+const removeBlog = (blogId: BlogAttribute["_id"]) =>
+  useBlogStore.setState((state) => ({
+    ...state,
+    blogs: state.blogs.filter((blog) => blog._id !== blogId),
+  }));
+
 const fetchBlogs = async () => {
   const { data } = await fetchFromApi({ url: "blogs" });
 
@@ -30,6 +36,6 @@ const fetchBlogs = async () => {
   }));
 };
 
-export { addBlog, fetchBlogs, updateBlog };
+export { addBlog, fetchBlogs, updateBlog, removeBlog };
 
 export default useBlogStore;

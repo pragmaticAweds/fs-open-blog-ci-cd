@@ -19,6 +19,7 @@ const Navbar = ({ openModal }: { openModal: () => void }) => {
           label={"Add a new blog"}
           className="px-4 whitespace-nowrap"
           onClick={openModal}
+          data-testid="blog-modal-btn"
         />
         <Button label="Log Out" className="px-4" onClick={logOut} />
       </div>

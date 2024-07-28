@@ -61,11 +61,11 @@ const AddBlogForm = ({ closeModal }: { closeModal: () => void }) => {
         data-testid="blog-form"
       >
         <h1 className="text-2xl text-center font-medium">Add New Blog</h1>
-        <Input label="Author" isRequired name="author" />
-        <Input label="Title" isRequired name="title" />
-        <Input label="Url" isRequired name="url" />
+        <Input label="Author" isRequired name="author" data-testid="author" />
+        <Input label="Title" isRequired name="title" data-testid="title" />
+        <Input label="Url" isRequired name="url" data-testid="url" />
 
-        <Button label="Add Blog" />
+        <Button label="Add Blog" data-testid="add-blog" />
       </form>
     </>
   );

@@ -8,6 +8,7 @@ const initialEntity = {
   isLoggedIn: false,
   token: null,
   username: "",
+  userId: "",
 };
 
 const useAuthStore = create<AuthAttribute>()(
