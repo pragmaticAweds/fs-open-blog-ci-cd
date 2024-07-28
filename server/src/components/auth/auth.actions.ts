@@ -65,6 +65,7 @@ const doSignup = async (req: IRequest, res: Response) => {
         data: {
           username,
           token,
+          userId: newUser._id,
         },
       },
       201
@@ -107,6 +108,7 @@ const doLogin = async (req: IRequest, res: Response) => {
       data: {
         token,
         username: nickname,
+        userId,
       },
     });
   } catch (err) {

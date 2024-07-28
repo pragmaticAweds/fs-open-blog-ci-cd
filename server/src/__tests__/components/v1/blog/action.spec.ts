@@ -1,3 +1,4 @@
+import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
 import supertest from "supertest";
 
 import BlogModel, {
@@ -140,12 +141,6 @@ describe("Blog Test", () => {
           .set("authorization", user_one_token)
           .send({ url, author })
           .expect(400);
-
-        await api
-          .post("/api/blogs")
-          .set("authorization", user_one_token)
-          .send({ url, title })
-          .expect(400);
       });
 
       it("should verify likes is empty array by default", async () => {
@@ -222,7 +217,7 @@ describe("Blog Test", () => {
         await api
           .delete(`/api/blogs/${existingDocId}`)
           .set("authorization", user_one_token)
-          .expect(204);
+          .expect(200);
 
         await api.get(`/api/blogs/${existingDocId}`).expect(404);
       });

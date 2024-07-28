@@ -9,7 +9,7 @@ const { authConfig } = appConfig;
 
 const verifyToken = async (
   req: IRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) => {
   let token = (req.headers["authorization"] ||
@@ -23,7 +23,10 @@ const verifyToken = async (
     req.decoded = decodedToken as IToken;
 
     if (!req.decoded) {
-      throw new ResponseError({ message: "Forbidden", status: 403 });
+      throw new ResponseError({
+        message: "Authentication is Required",
+        status: 401,
+      });
     }
 
     const userExist = await UserModel.findOne({
@@ -31,11 +34,14 @@ const verifyToken = async (
     });
 
     if (!userExist) {
-      throw new ResponseError({ message: "Forbidden", status: 403 });
+      throw new ResponseError({
+        message: "Authentication is Required",
+        status: 401,
+      });
     }
     return next();
   } catch (err) {
-    handleErrorResponse(err);
+    return handleErrorResponse(err, 401, next);
   }
 };
 

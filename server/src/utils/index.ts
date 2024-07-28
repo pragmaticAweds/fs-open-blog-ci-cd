@@ -78,7 +78,7 @@ const policyMiddleware =
         name: "Bad Request",
       };
 
-      handleErrorResponse(error);
+      return handleErrorResponse(error, 400, next);
     }
   };
 
@@ -110,7 +110,7 @@ const isCreatorMiddleware = async (
   try {
     const { decoded } = req;
 
-    if (!decoded || !decoded?.ref) throw Error("Forbidden");
+    if (!decoded || !decoded?.ref) throw new Error("Forbidden");
 
     const userExist = await UserModel.findById(decoded?.ref).lean();
 
@@ -120,7 +120,7 @@ const isCreatorMiddleware = async (
 
     next();
   } catch (err) {
-    return handleErrorResponse(err, 403);
+    return handleErrorResponse(err, 403, next);
   }
 };
 

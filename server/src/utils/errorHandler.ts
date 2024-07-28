@@ -21,9 +21,15 @@ class ResponseError extends Error {
   }
 }
 
-const handleErrorResponse = (err: unknown, statusCode?: number) => {
+const handleErrorResponse = (
+  err: unknown,
+  statusCode?: number,
+  next?: NextFunction
+) => {
   let { message, status } = err as ResponseError;
+
   const { extra, name } = err as ResponseError;
+
   switch (true) {
     case name === "CastError":
       message = "Malformatted id";
@@ -47,12 +53,14 @@ const handleErrorResponse = (err: unknown, statusCode?: number) => {
       break;
   }
 
-  throw new ResponseError({
+  const error = new ResponseError({
     name,
     message,
     status: (statusCode as number) || status,
     extra,
   });
+
+  (next as NextFunction)(error);
 };
 
 const errorHandlerMiddleware = (
@@ -71,14 +79,5 @@ const errorHandlerMiddleware = (
     },
   });
 };
-
-// class ErrorHandler {
-//   public async handleError(
-//     err: Error,
-//     responseStream: Response
-//   ): Promise<void> {}
-// }
-
-// export const handler = new ErrorHandler();
 
 export { handleErrorResponse, errorHandlerMiddleware, ResponseError };

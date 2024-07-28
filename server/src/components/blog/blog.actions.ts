@@ -154,7 +154,7 @@ const removeBlog = async (req: IRequest, res: Response) => {
 
     await BlogModel.deleteOne({ _id: blogId });
 
-    return handleResponse(res, "Blog deleted successfully.", 204);
+    return handleResponse(res, "Blog deleted successfully.", 200);
   } catch (err) {
     handleErrorResponse(err);
   }

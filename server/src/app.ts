@@ -16,13 +16,21 @@ const initializeDB = async () => {
   await initiateCounterModel();
 };
 
-const allowedOrigin = ["http://localhost:5173", "http://localhost:5174"];
+const allowedOrigin = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:3001",
+];
 const corsOption = {
   origin: function (
     origin: string | undefined,
     callback: (_err: Error | null, _origin?: boolean) => void
   ) {
-    if (allowedOrigin.indexOf(origin as string) !== -1) {
+    if (
+      appConfig.isTesting ||
+      appConfig.isE2ETest ||
+      allowedOrigin.indexOf(origin as string) !== -1
+    ) {
       callback(null, true);
     } else {
       callback(
@@ -36,20 +44,17 @@ const corsOption = {
 };
 
 const initializeApp = () => {
-  try {
-    app.use(helmet());
-    app.use(cors(corsOption));
-    app.use(express.json());
+  app.use(helmet());
+  app.use(cors(corsOption));
+  app.use(express.json());
 
-    app.use("/api", componentRouter);
+  app.use("/api", componentRouter);
 
-    app.use(errorHandlerMiddleware);
-  } catch (err) {
-    throw new Error(err as string);
-  }
+  app.use(errorHandlerMiddleware);
 };
 
 if (!appConfig.isTesting) initializeDB();
+
 initializeApp();
 
 export default app;
