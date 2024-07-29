@@ -27,7 +27,7 @@ const addBlog = async (req: IRequest, res: Response) => {
       201
     );
   } catch (err) {
-    handleErrorResponse(err);
+    return handleErrorResponse(err);
   }
 };
 

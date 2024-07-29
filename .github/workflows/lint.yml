@@ -1,0 +1,24 @@
+name: Lint Code
+
+on: workflow_call
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Lint code (client)
+        working-directory: ./client
+        run: npm run lint
+
+      - name: Lint code (server)
+        working-directory: ./server
+        run: npm run lint
