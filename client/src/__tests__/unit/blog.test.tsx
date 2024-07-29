@@ -21,12 +21,12 @@ test("renders content", ({ expect }) => {
   expect(element).toBeDefined();
 });
 
-test("likes and url is hidden by default", ({ expect }) => {
+test("likes and url is shown by default", ({ expect }) => {
   render(<BlogCard blog={blog} />);
 
-  const element = screen.queryByTestId("blog-likes");
+  const element = screen.getByTestId("blog-likes");
 
-  expect(element).toBeNull();
+  expect(element).toBeDefined();
 });
 
 test("likes and url are shown when the view btn is clicked", async ({
