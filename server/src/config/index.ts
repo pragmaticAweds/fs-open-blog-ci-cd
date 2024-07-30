@@ -7,7 +7,7 @@ dotenv.config();
 const appConfig = {
   isTesting: env.NODE_ENV === "test",
   isE2ETest: env.NODE_ENV === "test-e2e",
-  port: env.PORT || 5000,
+  port: env.PORT || 3001,
   db_url: ["test", "test-e2e"].includes(env.NODE_ENV as string)
     ? env.TEST_DB_URI
     : env.DB_URI,
