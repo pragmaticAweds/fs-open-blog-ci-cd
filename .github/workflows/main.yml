@@ -59,7 +59,7 @@ jobs:
 
       - name: Start server
         working-directory: ./server
-        run: nohup npm start &
+        run: nohup npm run start:test &
 
       - name: Run e2e test
         working-directory: ./client
