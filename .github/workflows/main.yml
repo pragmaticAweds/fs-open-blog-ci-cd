@@ -73,10 +73,10 @@ jobs:
         working-directory: ./server
         run: nohup npm start &
 
-      - name: Install Playwright browsers
-        working-directory: ./client
-        run: npx playwright install
-
-      # - name: Run e2e test
+      # - name: Install Playwright browsers
       #   working-directory: ./client
-      #   run: npm run test:e2e
+      #   run: npx playwright install
+
+      - name: Run e2e test
+        working-directory: ./client
+        run: npm run test:e2e
