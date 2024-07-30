@@ -29,6 +29,11 @@ jobs:
         working-directory: ./server
         run: npm install
 
+      - name: Set environment variables
+        env:
+          TEST_DB_URI: ${{ secrets.TEST_DB_URI }}
+        run: echo "TEST_DB_URI=${{ secrets.TEST_DB_URI }}" >> $GITHUB_ENV
+
       - name: Run client linting
         working-directory: ./client
         run: npm run lint
