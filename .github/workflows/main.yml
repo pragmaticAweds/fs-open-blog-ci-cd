@@ -31,8 +31,8 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo: "TEST_DB_URI: ${{ secrets.TEST_DB_URI }}"
-          echo: "DB_URI: ${{ secrets.DB_URI }}"
+          echo "TEST_DB_URI: ${{ secrets.TEST_DB_URI }}"
+          echo "DB_URI: ${{ secrets.DB_URI }}"
 
       - name: Run client linting
         working-directory: ./client
