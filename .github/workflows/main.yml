@@ -61,6 +61,12 @@ jobs:
         working-directory: ./server
         run: nohup npm run start:test &
 
+      - name: Wait for server to start
+        run: sleep 20 # Increase this if needed
+
+      - name: Check server status
+        run: curl -I http://localhost:3001/api/blogs || exit 1
+
       - name: Run e2e test
         working-directory: ./client
-        run: npx playwright test
+        run: npm run test:e2e
