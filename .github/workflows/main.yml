@@ -9,21 +9,38 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  install-dependencies:
-    uses: ./.github/workflows/install-dependencies.yml
+  deployment_pipeline:
+    runs-on: ubuntu-latest
+    concurrency: deploy-group
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  lint:
-    needs: install-dependencies
-    uses: ./.github/workflows/lint.yml
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-  build:
-    needs: lint
-    uses: ./.github/workflows/build.yml
+      - name: Install client dependencies
+        working-directory: ./client
+        run: npm install
 
-  test:
-    needs: build
-    uses: ./.github/workflows/test.yml
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm install
 
-  # deploy:
-  #   needs: test
-  #   uses: ./.github/workflows/deploy.yml
+      - name: Run client linting
+        working-directory: ./client
+        run: npm run lint
+
+      - name: Run server linting
+        working-directory: ./server
+        run: npm run lint
+
+      - name: Run client test
+        working-directory: ./client
+        run: npm run test
+
+      - name: Run server test
+        working-directory: ./server
+        run: npm run test

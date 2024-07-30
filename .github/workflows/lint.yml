@@ -19,13 +19,13 @@ jobs:
         working-directory: ./client
         run: npm install
 
-      - name: Lint code (client)
-        working-directory: ./client
-        run: npm run lint
-
       - name: Install dependencies (server)
         working-directory: ./server
         run: npm install --legacy-peer-deps
+
+      - name: Lint code (client)
+        working-directory: ./client
+        run: npm run lint
 
       - name: Lint code (server)
         working-directory: ./server
