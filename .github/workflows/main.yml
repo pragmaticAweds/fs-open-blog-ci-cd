@@ -52,14 +52,31 @@ jobs:
         working-directory: ./server
         run: npm run build
 
-      - name: Start server
-        working-directory: ./server
-        run: nohup npm start &
-
       - name: Install Playwright browsers
-        working-directory: ./client
-        run: npx playwright install
+        run: |
+          cd client
+          npx playwright install
+
+      - name: Start server
+        run: |
+          cd server
+          npm run start-server &
+        working-directory: ./server
+
+      - name: Wait for server to start
+        run: sleep 15 # Adjust the sleep time as needed
+
+      - name: Run Playwright tests
+        run: cd client && npx playwright test
+
+      # - name: Start server
+      #   working-directory: ./server
+      #   run: nohup npm start &
+
+      # - name: Install Playwright browsers
+      #   working-directory: ./client
+      #   run: npx playwright install
 
       # - name: Run e2e test
-      # working-directory: ./client
-      # run: npm run test:e2e
+      #   working-directory: ./client
+      #   run: npm run test:e2e
