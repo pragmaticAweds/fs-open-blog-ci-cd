@@ -56,7 +56,9 @@ jobs:
 
       - name: Start server
         working-directory: ./server
-        run: nohup npm start
+        run: nohup npm start &
+        env:
+          TEST_DB_URI: ${{ secrets.TEST_DB_URI }}
 
       - name: run e2e test
         working-directory: ./client
