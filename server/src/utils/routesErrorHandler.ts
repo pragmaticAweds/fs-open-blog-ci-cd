@@ -17,7 +17,7 @@ class EnhancedRouter {
   private wrapHandler(handler: RequestHandler): RequestHandler {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
-        await handler(req, res, next);
+        handler(req, res, next);
       } catch (error) {
         next(error);
       }
@@ -45,6 +45,7 @@ class EnhancedRouter {
     const wrappedHandlers = handlers.map((handler) =>
       this.wrapHandler(handler)
     );
+
     this.router.all(path, ...wrappedHandlers);
   }
 
@@ -52,6 +53,7 @@ class EnhancedRouter {
     const wrappedHandlers = handlers.map((handler) =>
       this.wrapHandler(handler)
     );
+
     this.router.use(...wrappedHandlers);
   }
 
