@@ -59,7 +59,7 @@ jobs:
 
       - name: Start server
         working-directory: ./server
-        run: nohup npm run start:test &
+        run: nohup npm run start:test
 
       - name: Check server status
         run: curl -I http://localhost:3001/api/blogs || exit 1
