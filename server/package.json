@@ -8,7 +8,7 @@
     "start": "node dist/index.js",
     "dev": "ts-node-dev --transpile-only --exit-child --clear src",
     "start:test": "NODE_ENV=test-e2e ts-node-dev --transpile-only --exit-child --clear src",
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "lint": "eslint 'src/**/*.{js,ts}' --fix"
   },
   "keywords": [
