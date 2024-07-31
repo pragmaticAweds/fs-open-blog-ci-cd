@@ -73,13 +73,13 @@ jobs:
         working-directory: ./client
         run: npm run test:e2e
 
-      - name: Trigger deployment
-        if: ${{ !contains(toJson(github.event.commits.*.message), '#skip') && github.event_name == 'push' }}
-        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
-
       - name: Collaboration Invite Notification
         uses: rjstone/discord-webhook-notify@v1
         with:
           severity: info
           description: Hi @mlukkai, pease, I sent you an invite to review my pull request for CI/CD module. invite link https://github.com/pragmaticAweds/fs-open-blog-ci-cd/invitations, Thanks.
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Trigger deployment
+        if: ${{ !contains(toJson(github.event.commits.*.message), '#skip') && github.event_name == 'push' }}
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
