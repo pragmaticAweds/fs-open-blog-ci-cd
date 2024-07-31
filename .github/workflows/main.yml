@@ -72,7 +72,7 @@ jobs:
         working-directory: ./client
         run: npm run test:e2e
 
-       - name: Debug Webhook Response
+      - name: Debug Webhook Response
         run: |
           echo 'Sending test message to Discord'
           curl -X POST -H "Content-Type: application/json" -d '{"content": "Test message from GitHub Actions"}' ${{ secrets.DISCORD_WEBHOOK }} -v
