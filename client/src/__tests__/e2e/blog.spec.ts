@@ -1,11 +1,39 @@
+import { baseUrl } from "@/lib/config/constant";
 import { blogData, blogsData, userData } from "../helper";
-import { test } from "@playwright/test";
+import { BrowserContext, test } from "@playwright/test";
 
-const { describe, expect, beforeEach } = test;
+const { describe, expect, beforeEach, beforeAll } = test;
 
 const [non_creator, creator] = userData;
 
 describe("Blog", () => {
+  let context: BrowserContext;
+
+  beforeAll(async ({ browser }) => {
+    context = await browser.newContext({
+      baseURL: baseUrl,
+      extraHTTPHeaders: {
+        origin: "http://localhost:5174",
+      },
+    });
+
+    const req = context.request;
+
+    const page = await context.newPage();
+
+    await req.get(`${baseUrl}/testing/reset`);
+
+    await req.post(`${baseUrl}/auth/signup`, { data: non_creator });
+
+    await req.post(`${baseUrl}/auth/signup`, { data: creator });
+
+    await page.goto("/");
+  });
+
+  test.afterAll(async () => {
+    await context.close();
+  });
+
   describe("When a creator logs in", () => {
     beforeEach(async ({ page }) => {
       await page.goto("/");
@@ -201,8 +229,6 @@ describe("Blog", () => {
           return { title, likes };
         })
       );
-
-      console.log(blogs);
 
       for (let i = 0; i < blogs.length - 1; i++) {
         expect(blogs[i].likes).toBeGreaterThanOrEqual(blogs[i + 1].likes);
