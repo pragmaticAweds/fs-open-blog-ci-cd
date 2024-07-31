@@ -1,3 +1,5 @@
-const baseUrl = "http://localhost:3001/api";
+const baseUrl = "/api";
+// http://localhost:3001
 
-export { baseUrl };
+const testBaseUrl = "http://localhost:3001/api";
+export { baseUrl, testBaseUrl };

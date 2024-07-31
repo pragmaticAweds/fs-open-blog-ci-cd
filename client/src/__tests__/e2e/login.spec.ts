@@ -1,4 +1,4 @@
-import { baseUrl } from "@/lib/config/constant";
+import { testBaseUrl } from "@/lib/config/constant";
 import { BrowserContext, test } from "@playwright/test";
 import { userData } from "../helper";
 
@@ -10,7 +10,7 @@ describe("Blog app", () => {
   let context: BrowserContext;
   beforeAll(async ({ browser }) => {
     context = await browser.newContext({
-      baseURL: baseUrl,
+      baseURL: testBaseUrl,
       extraHTTPHeaders: {
         origin: "http://localhost:5174",
       },
@@ -18,11 +18,11 @@ describe("Blog app", () => {
 
     const req = context.request;
 
-    await req.get(`${baseUrl}/testing/reset`);
+    await req.get(`${testBaseUrl}/testing/reset`);
 
-    await req.post(`${baseUrl}/auth/signup`, { data: non_creator });
+    await req.post(`${testBaseUrl}/auth/signup`, { data: non_creator });
 
-    await req.post(`${baseUrl}/auth/signup`, { data: creator });
+    await req.post(`${testBaseUrl}/auth/signup`, { data: creator });
   });
 
   test.afterAll(async () => {

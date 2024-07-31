@@ -1,4 +1,4 @@
-import { baseUrl } from "@/lib/config/constant";
+import { testBaseUrl } from "@/lib/config/constant";
 import { blogData, blogsData, userData } from "../helper";
 import { BrowserContext, test } from "@playwright/test";
 
@@ -11,7 +11,7 @@ describe("Blog", () => {
 
   beforeAll(async ({ browser }) => {
     context = await browser.newContext({
-      baseURL: baseUrl,
+      baseURL: testBaseUrl,
       extraHTTPHeaders: {
         origin: "http://localhost:5174",
       },
@@ -21,11 +21,11 @@ describe("Blog", () => {
 
     const page = await context.newPage();
 
-    await req.get(`${baseUrl}/testing/reset`);
+    await req.get(`${testBaseUrl}/testing/reset`);
 
-    await req.post(`${baseUrl}/auth/signup`, { data: non_creator });
+    await req.post(`${testBaseUrl}/auth/signup`, { data: non_creator });
 
-    await req.post(`${baseUrl}/auth/signup`, { data: creator });
+    await req.post(`${testBaseUrl}/auth/signup`, { data: creator });
 
     await page.goto("/");
   });
