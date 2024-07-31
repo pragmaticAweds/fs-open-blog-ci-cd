@@ -4,9 +4,9 @@ import { handleErrorResponse } from "../utils/errorHandler";
 
 const connectDb = async () => {
   try {
-    mongoose.set("debug", {
-      color: true,
-    });
+    // mongoose.set("debug", {
+    //   color: true,
+    // });
 
     await mongoose.connect(appConfig.db_url as string, {
       family: 4,

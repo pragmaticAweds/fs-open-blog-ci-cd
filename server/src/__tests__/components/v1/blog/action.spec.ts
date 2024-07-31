@@ -57,8 +57,7 @@ describe("Blog Test", () => {
     });
 
     afterAll(async () => {
-      await BlogModel.deleteMany();
-      await resetCounterModel();
+      await Promise.all([BlogModel.deleteMany(), resetCounterModel()]);
     });
   });
 
@@ -71,6 +70,8 @@ describe("Blog Test", () => {
     const [creator_one, creator_two] = newCreatorDetails;
 
     beforeAll(async () => {
+      await Promise.all([BlogModel.deleteMany(), resetCounterModel()]);
+
       await createNewUsers();
 
       const { username, password } = creator_one;
