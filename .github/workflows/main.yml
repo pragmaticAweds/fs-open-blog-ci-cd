@@ -80,9 +80,8 @@ jobs:
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
       - name: Collaboration Invite Notification
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@v1.0.4
         with:
           severity: info
-          text: Hi @mlukkai, pease, I sent you an invite to review my pull request for CI/CD module. invite link [https://github.com/pragmaticAweds/fs-open-blog-ci-cd/invitations], Thanks.
-          details: Invite
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          description: Hi @mlukkai, pease, I sent you an invite to review my pull request for CI/CD module. invite link [https://github.com/pragmaticAweds/fs-open-blog-ci-cd/invitations], Thanks.
