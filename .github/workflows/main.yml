@@ -72,16 +72,13 @@ jobs:
         working-directory: ./client
         run: npm run test:e2e
 
-      - name: Debug Webhook Response
-        run: |
-          echo 'Sending test message to Discord'
-          curl -X POST -H "Content-Type: application/json" -d '{"content": "Test message from GitHub Actions"}' ${{ secrets.DISCORD_WEBHOOK }} -v
-
       - name: Collaboration Invite Notification
         uses: rjstone/discord-webhook-notify@v1
+        env:
+          MESSAGE: Hi @mlukkai, pease, I sent you an invite to review my pull request for CI/CD module. invite link https://github.com/pragmaticAweds/fs-open-blog-ci-cd/invitations, Thanks.
         with:
           severity: info
-          text: Hi @mlukkai, pease, I sent you an invite to review my pull request for CI/CD module. invite link https://github.com/pragmaticAweds/fs-open-blog-ci-cd/invitations, Thanks.
+          text: ${{ env.MESSAGE }}
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Trigger deployment
