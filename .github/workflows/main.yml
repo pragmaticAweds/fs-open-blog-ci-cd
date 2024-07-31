@@ -73,11 +73,11 @@ jobs:
         run: npm run test:e2e
 
       - name: Collaboration Invite Notification
-        uses: rjstone/discord-webhook-notify@v1
+        uses: tsickert/discord-webhook@v5.3.0
         with:
-          severity: info
-          text: "Hi @mlukkai, pease, I sent you an invite to review my pull request for CI/CD module. invite link https://github.com/pragmaticAweds/fs-open-blog-ci-cd/invitations, Thanks."
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          username: "pragmaticAweds"
+          content: "Hi @mlukkai, pease, I sent you an invite to review my pull request for CI/CD module. invite link https://github.com/pragmaticAweds/fs-open-blog-ci-cd/invitations, Thanks."
 
       - name: Trigger deployment
         if: ${{ !contains(toJson(github.event.commits.*.message), '#skip') && github.event_name == 'push' }}
