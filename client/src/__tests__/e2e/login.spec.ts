@@ -1,20 +1,32 @@
 import { baseUrl } from "@/lib/config/constant";
-import { test } from "@playwright/test";
-import { apiContext, userData } from "../helper";
+import { BrowserContext, test } from "@playwright/test";
+import { userData } from "../helper";
 
-const { describe, beforeEach, expect } = test;
+const { describe, beforeAll, expect } = test;
 
 const [non_creator, creator] = userData;
 
 describe("Blog app", () => {
-  beforeEach(async ({ page }) => {
-    await apiContext.get(`${baseUrl}/testing/reset`);
+  let context: BrowserContext;
+  beforeAll(async ({ browser }) => {
+    context = await browser.newContext({
+      baseURL: baseUrl,
+      extraHTTPHeaders: {
+        origin: "http://localhost:5174",
+      },
+    });
 
-    await apiContext.post(`${baseUrl}/auth/signup`, { data: non_creator });
+    const req = context.request;
 
-    await apiContext.post(`${baseUrl}/auth/signup`, { data: creator });
+    await req.get(`${baseUrl}/testing/reset`);
 
-    await page.goto("/");
+    await req.post(`${baseUrl}/auth/signup`, { data: non_creator });
+
+    await req.post(`${baseUrl}/auth/signup`, { data: creator });
+  });
+
+  test.afterAll(async () => {
+    await context.close();
   });
 
   test("Login form is shown", async ({ page }) => {
@@ -24,6 +36,7 @@ describe("Blog app", () => {
 
   describe("Login", () => {
     test("succeeds with correct credentials", async ({ page }) => {
+      page.goto("/");
       await page.getByTestId("username").fill(non_creator.username);
       await page.getByTestId("password").fill(non_creator.password);
       await page.getByRole("button", { name: "Login" }).click();
@@ -32,6 +45,7 @@ describe("Blog app", () => {
     });
 
     test("fails with wrong credentials", async ({ page }) => {
+      page.goto("/");
       await page.getByTestId("username").fill("John Doe");
       await page.getByTestId("password").fill(non_creator.password);
       await page.getByRole("button", { name: "Login" }).click();
