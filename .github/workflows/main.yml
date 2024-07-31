@@ -15,7 +15,6 @@ jobs:
     env:
       TEST_DB_URI: ${{ secrets.TEST_DB_URI }}
       DB_URI: ${{ secrets.DB_URI }}
-      GITHUB_CONTEXT: ${{toJson(github)}}
 
     steps:
       - name: Checkout repository
@@ -77,7 +76,7 @@ jobs:
         uses: rjstone/discord-webhook-notify@v1
         with:
           severity: info
-          description: Hi @mlukkai, pease, I sent you an invite to review my pull request for CI/CD module. invite link https://github.com/pragmaticAweds/fs-open-blog-ci-cd/invitations, Thanks.
+          text: Hi @mlukkai, pease, I sent you an invite to review my pull request for CI/CD module. invite link https://github.com/pragmaticAweds/fs-open-blog-ci-cd/invitations, Thanks.
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Trigger deployment
