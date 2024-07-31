@@ -1,4 +1,3 @@
-import { Router } from "express";
 import { policyMiddleware } from "../../utils";
 import { blogIdSchema } from "../blog/blog.policy";
 import { verifyToken } from "../auth/auth.middleware";
@@ -16,8 +15,9 @@ import {
   getComments,
   getSingleComment,
 } from "./comment.actions";
+import { EnhancedRouter } from "../../utils/routesErrorHandler";
 
-const commentsRouter = Router();
+const commentsRouter = new EnhancedRouter();
 
 commentsRouter.get(
   "/blogs/:blogId",
@@ -52,4 +52,4 @@ commentsRouter.post(
   addComment
 );
 
-export default commentsRouter;
+export default commentsRouter.getRouter();

@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { IRequest, IToken } from "../../types";
 import jwt from "jsonwebtoken";
-import { handleErrorResponse, ResponseError } from "../../utils/errorHandler";
+import { ResponseError } from "../../utils/errorHandler";
 import { appConfig } from "../../config";
 import UserModel from "../user/user.model";
 
@@ -39,9 +39,10 @@ const verifyToken = async (
         status: 401,
       });
     }
+
     return next();
   } catch (err) {
-    return handleErrorResponse(err, 401, next);
+    next(err);
   }
 };
 

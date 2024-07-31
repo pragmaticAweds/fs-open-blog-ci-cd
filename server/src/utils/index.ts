@@ -9,10 +9,9 @@ import { Schema } from "zod";
 
 import { CustomIdAttributes, DocCounterAttributes, IRequest } from "../types";
 
-import { handleErrorResponse } from "./errorHandler";
-
 import { appConfig } from "../config";
 import UserModel from "../components/user/user.model";
+import { ResponseError } from "./errorHandler";
 
 const incrementDocId = (id: number) => String(id).padStart(6, "0");
 
@@ -78,7 +77,7 @@ const policyMiddleware =
         name: "Bad Request",
       };
 
-      return handleErrorResponse(error, 400, next);
+      next(error);
     }
   };
 
@@ -110,17 +109,25 @@ const isCreatorMiddleware = async (
   try {
     const { decoded } = req;
 
-    if (!decoded || !decoded?.ref) throw new Error("Forbidden");
+    if (!decoded || !decoded?.ref) {
+      throw new ResponseError({
+        message: "Forbidden",
+        status: 401,
+      });
+    }
 
     const userExist = await UserModel.findById(decoded?.ref).lean();
 
     if (!userExist || !userExist.isCreator) {
-      return handleResponse(res, { data: { message: "Forbidden" } }, 403);
+      throw new ResponseError({
+        message: "Forbidden",
+        status: 401,
+      });
     }
 
     next();
   } catch (err) {
-    return handleErrorResponse(err, 403, next);
+    next(err);
   }
 };
 

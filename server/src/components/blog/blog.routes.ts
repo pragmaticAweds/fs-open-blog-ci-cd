@@ -1,4 +1,3 @@
-import { Router } from "express";
 import {
   addBlog,
   disLikeBlog,
@@ -15,8 +14,9 @@ import {
   createNewBlogSchema,
   editBlogSchema,
 } from "./blog.policy";
+import { EnhancedRouter } from "../../utils/routesErrorHandler";
 
-const blogsRouter = Router();
+const blogsRouter = new EnhancedRouter();
 
 blogsRouter.patch(
   "/:blogId/like",
@@ -64,4 +64,4 @@ blogsRouter.post(
 
 blogsRouter.get("/", fetchBlogs);
 
-export default blogsRouter;
+export default blogsRouter.getRouter();

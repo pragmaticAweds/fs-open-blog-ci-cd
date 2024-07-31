@@ -21,13 +21,8 @@ class ResponseError extends Error {
   }
 }
 
-const handleErrorResponse = (
-  err: unknown,
-  statusCode?: number,
-  next?: NextFunction
-) => {
+const handleErrorResponse = (err: unknown, statusCode?: number): never => {
   let { message, status } = err as ResponseError;
-
   const { extra, name } = err as ResponseError;
 
   switch (true) {
@@ -53,14 +48,12 @@ const handleErrorResponse = (
       break;
   }
 
-  const error = new ResponseError({
+  throw new ResponseError({
     name,
     message,
-    status: (statusCode as number) || status,
+    status: statusCode || status,
     extra,
   });
-
-  (next as NextFunction)(error);
 };
 
 const errorHandlerMiddleware = (

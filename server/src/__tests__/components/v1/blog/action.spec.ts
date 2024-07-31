@@ -38,6 +38,8 @@ describe("Blog Test", () => {
 
   describe("GET /blogs", () => {
     beforeAll(async () => {
+      await Promise.all([BlogModel.deleteMany(), resetCounterModel()]);
+
       await createNewBlogs();
     });
 

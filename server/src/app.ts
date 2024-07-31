@@ -1,13 +1,18 @@
-import express from "express";
+import express, { NextFunction, Response } from "express";
 import helmet from "helmet";
 import cors from "cors";
 
 import componentRouter from "./components/routes";
-import { ResponseError, errorHandlerMiddleware } from "./utils/errorHandler";
+import {
+  ResponseError,
+  errorHandlerMiddleware,
+  handleErrorResponse,
+} from "./utils/errorHandler";
 import { connectDb } from "./config/persistence";
 
 import { initiateCounterModel } from "./config/initiateCounterModels";
 import { appConfig } from "./config";
+import { IRequest } from "./types";
 
 const app = express();
 
@@ -50,7 +55,22 @@ const initializeApp = () => {
 
   app.use("/api", componentRouter);
 
-  app.use(errorHandlerMiddleware);
+  app.use((err: unknown, req: IRequest, res: Response, next: NextFunction) => {
+    try {
+      handleErrorResponse(err);
+    } catch (handledError) {
+      if (handledError instanceof ResponseError) {
+        errorHandlerMiddleware(handledError, req, res, next);
+      } else {
+        const genericError = new ResponseError({
+          message: "An unexpected error occurred",
+          status: 500,
+        });
+
+        errorHandlerMiddleware(genericError, req, res, next);
+      }
+    }
+  });
 };
 
 if (!appConfig.isTesting) initializeDB();
