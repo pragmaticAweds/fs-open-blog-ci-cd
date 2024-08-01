@@ -18,6 +18,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    outDir: "../server/dist_client",
+    emptyOutDir: true,
+  },
   server: {
     proxy: {
       "/api": {
@@ -25,9 +29,5 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
-  },
-  build: {
-    outDir: "../server/dist-2",
-    emptyOutDir: true,
   },
 });

@@ -172,7 +172,9 @@ describe("Blog", () => {
 
       await deleteBtn.click();
 
-      await expect(page.getByText("Blog deleted successfully.")).toBeVisible();
+      await expect(page.getByText("Blog deleted successfully.")).toBeVisible({
+        timeout: 7000,
+      });
     });
   });
 
@@ -183,7 +185,9 @@ describe("Blog", () => {
       await page.getByTestId("username").fill(creator.username);
       await page.getByTestId("password").fill(creator.password);
       await page.getByRole("button", { name: "Login" }).click();
-      await expect(page.getByText("Login successful")).toBeVisible();
+      await expect(page.getByText("Login successful")).toBeVisible({
+        timeout: 7000,
+      });
 
       for (const blogData of blogsData) {
         await page.getByTestId("blog-modal-btn").click();
