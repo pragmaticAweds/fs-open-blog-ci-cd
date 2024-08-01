@@ -58,10 +58,10 @@ const initializeApp = () => {
 
   app.use("/api", componentRouter);
 
-  app.use(express.static("dist-2"));
+  app.use(express.static("dist_client"));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../dist-2/index.html"));
+    res.sendFile(path.join(__dirname, "../dist_client/index.html"));
   });
 
   app.use((err: unknown, req: IRequest, res: Response, next: NextFunction) => {

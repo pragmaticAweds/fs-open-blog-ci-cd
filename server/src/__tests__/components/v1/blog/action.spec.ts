@@ -24,9 +24,9 @@ import { connectDb } from "../../../../config/persistence";
 const api = supertest(app);
 
 const collections = [
+  BlogModel,
   UserModel,
   UserAccessModel,
-  BlogModel,
 ] as unknown as Model<unknown>[];
 
 describe("Blog Test", () => {
@@ -38,8 +38,8 @@ describe("Blog Test", () => {
 
   describe("GET /blogs", () => {
     beforeAll(async () => {
-      await Promise.all([BlogModel.deleteMany(), resetCounterModel()]);
-
+      await BlogModel.deleteMany();
+      await resetCounterModel();
       await createNewBlogs();
     });
 
@@ -57,7 +57,8 @@ describe("Blog Test", () => {
     });
 
     afterAll(async () => {
-      await Promise.all([BlogModel.deleteMany(), resetCounterModel()]);
+      await BlogModel.deleteMany();
+      await resetCounterModel();
     });
   });
 
@@ -70,7 +71,9 @@ describe("Blog Test", () => {
     const [creator_one, creator_two] = newCreatorDetails;
 
     beforeAll(async () => {
-      await Promise.all([BlogModel.deleteMany(), resetCounterModel()]);
+      await BlogModel.deleteMany();
+
+      await resetCounterModel();
 
       await createNewUsers();
 

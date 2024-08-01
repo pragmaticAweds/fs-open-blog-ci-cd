@@ -9,11 +9,5 @@
     "skipLibCheck": true
   },
   "include": ["src/**/*"],
-  "exclude": [
-    "node_modules",
-    // "**/*.spec.ts",
-    // "**/*.specs.ts",
-    // "src/__jest",
-    "src/__tests__/**/*"
-  ]
+  "exclude": ["node_modules", "src/__tests__/**/*", "dist", "dist_client"]
 }

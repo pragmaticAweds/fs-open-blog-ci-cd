@@ -1,5 +1,4 @@
 .env
 node_modules
 dist
-dist-2
-pnpm-lock.yaml
+dist_client
