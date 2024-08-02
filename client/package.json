@@ -24,6 +24,7 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8",
+    "vite": "^5.3.1",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
@@ -44,7 +45,6 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.3.1",
     "vitest": "^2.0.1",
     "@testing-library/jest-dom": "^6.4.6"
   }
