@@ -1,4 +1,4 @@
-import { testBaseUrl } from "@/lib/config/constant";
+import { testBaseUrl } from "../../lib/config/constant";
 import { blogData, blogsData, userData } from "../helper";
 import { BrowserContext, test } from "@playwright/test";
 

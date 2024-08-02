@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import BlogCard from "@/components/molecules/BlogCard";
+import { test, vi } from "vitest";
 
 const blog = {
   _id: "01",
